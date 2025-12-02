@@ -2,6 +2,7 @@ using heracles.Server.Data;
 using heracles.Server.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -26,5 +27,24 @@ app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
-app.MapControllers();
+
+try
+{
+    app.MapControllers();
+}
+catch (ReflectionTypeLoadException rtle)
+{
+    Console.WriteLine("ReflectionTypeLoadException caught while mapping controllers:");
+    foreach (var ex in rtle.LoaderExceptions)
+    {
+        Console.WriteLine(ex.ToString());
+    }
+    throw;
+}
+catch (Exception ex)
+{
+    Console.WriteLine("Exception caught while mapping controllers: " + ex);
+    throw;
+}
+
 app.Run();

@@ -1,0 +1,10 @@
+.app-root { font-family: Arial, Helvetica, sans-serif; }
+.navbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: #222; color: #fff; }
+.brand { display:flex; align-items:center; gap:10px; }
+.brand-logo { width:48px; height:48px; object-fit:cover; border-radius:6px; }
+.brand-text { font-weight: bold; color: #fff; }
+.menu { list-style: none; display: flex; gap: 12px; margin: 0; padding: 0; }
+.menu li { cursor: pointer; padding: 6px 10px; border-radius: 4px; }
+.menu li:hover { background: rgba(255,255,255,0.08); }
+.menu li.active { background: #fff; color: #222; }
+.content { padding: 20px; }

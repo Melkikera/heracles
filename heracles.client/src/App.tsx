@@ -1,17 +1,19 @@
-// src/App.js
+// src/App.tsx
 import React, { useState } from 'react';
-import ProductList from './components/ProductList/ProductList';
-import ProductForm from './components/ProductForm/ProductForm';
+import Home from './pages/Home/Home';
+import About from './pages/About/About';
+import Layout from './components/Layout/Layout';
+
 function App() {
-    const [refresh, setRefresh] = useState(false);
-    const handleProductAdded = () => {
-        setRefresh(!refresh); // Toggle refresh state to trigger re-render
-    };
-    return (
-        <div>
-            <ProductList key={refresh} />
-            <ProductForm onProductAdded={handleProductAdded} />
-        </div>
-    );
+  const [route, setRoute] = useState<'home' | 'about'>('home');
+
+  const handleNavigate = (target: 'home' | 'about') => setRoute(target);
+
+  return (
+    <Layout onNavigate={handleNavigate} currentRoute={route}>
+      {route === 'home' ? <Home /> : <About />}
+    </Layout>
+  );
 }
+
 export default App;
