@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using heracles.Server.Data;
@@ -11,9 +12,11 @@ using heracles.Server.Data;
 namespace heracles.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251202151232_SeedContact")]
+    partial class SeedContact
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,7 +87,7 @@ namespace heracles.Server.Migrations
                             Mobile = "+1 987 654 321",
                             PostalAddress = "123 Main St, City, Country",
                             SchedulesJson = "{\"Monday\":\"9:00-17:00\",\"Tuesday\":\"9:00-17:00\",\"Wednesday\":\"9:00-17:00\",\"Thursday\":\"9:00-17:00\",\"Friday\":\"9:00-17:00\"}",
-                            SubmittedAt = new DateTime(2025, 12, 5, 11, 22, 28, 123, DateTimeKind.Local).AddTicks(6733),
+                            SubmittedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Telephone = "+1 234 567 890"
                         });
                 });

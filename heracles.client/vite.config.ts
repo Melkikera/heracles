@@ -50,6 +50,13 @@ export default defineConfig({
             '^/weatherforecast': {
                 target,
                 secure: false
+            },
+            // Proxy all /api requests to the ASP.NET backend (default https://localhost:7166)
+            '^/api': {
+                target,
+                changeOrigin: true,
+                secure: false,
+                // preserve path
             }
         },
         port: parseInt(env.DEV_SERVER_PORT || '50336'),

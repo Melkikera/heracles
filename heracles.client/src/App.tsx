@@ -1,18 +1,29 @@
 // src/App.tsx
-import React, { useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home/Home';
 import About from './pages/About/About';
+import Contact from './pages/Contact/Contact';
+import Products from './pages/Products/Products';
+import Dashboard from './pages/Admin/Dashboard';
 import Layout from './components/Layout/Layout';
+import ContactsAdmin from './pages/Admin/ContactsAdmin';
+import ProductsAdmin from './pages/Products/ProductsAdmin';
 
 function App() {
-  const [route, setRoute] = useState<'home' | 'about'>('home');
-
-  const handleNavigate = (target: 'home' | 'about') => setRoute(target);
-
   return (
-    <Layout onNavigate={handleNavigate} currentRoute={route}>
-      {route === 'home' ? <Home /> : <About />}
-    </Layout>
+    <BrowserRouter>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/admin" element={<Dashboard />} />
+          <Route path="/admin/products" element={<ProductsAdmin />} />
+          <Route path="/admin/contacts" element={<ContactsAdmin />} />
+        </Routes>
+      </Layout>
+    </BrowserRouter>
   );
 }
 

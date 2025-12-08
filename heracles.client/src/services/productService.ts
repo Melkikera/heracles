@@ -1,8 +1,15 @@
 import axios from 'axios';
 
-const baseURL = 'https://localhost:7166/api/products';
+interface Product {
+    id?: number;
+    name: string;
+    price: number;
+}
+
+const baseURL = '/api/products';
+
 const productService = {
-    getAllProducts: async () => {
+    getAllProducts: async (): Promise<Product[]> => {
         try {
             const response = await axios.get(
                 baseURL,
@@ -13,26 +20,27 @@ const productService = {
                     },
                 },
             );
-            return response.data;
-        } catch (err) {
-            if (err.code === 'ECONNABORTED') {
+            return response.data as Product[];
+        } catch (err: unknown) {
+            if (axios.isAxiosError(err) && err.code === 'ECONNABORTED') {
                 console.log('The request timed out.');
             } else {
                 console.log(err);
             }
+            return [];
         }
     },
-    addProduct: async (product) => {
+    addProduct: async (product: Product) => {
         const response = await axios.post(baseURL, product);
-        return response.data;
+        return response.data as Product;
     },
-    deleteProduct: async (id) => {
+    deleteProduct: async (id: number) => {
         const response = await axios.delete(`${baseURL}/${id}`);
         return response.data;
     },
-    updateProduct: async (id, product) => {
+    updateProduct: async (id: number, product: Product) => {
         const response = await axios.put(`${baseURL}/${id}`, product);
-        return response.data;
+        return response.data as Product;
     }
 };
 export default productService;

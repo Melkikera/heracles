@@ -1,10 +1,9 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import './layout.css';
 
 interface Props {
   children: React.ReactNode;
-  onNavigate: (route: 'home' | 'about') => void;
-  currentRoute: 'home' | 'about';
 }
 
 const defaultLogoDataUrl = `data:image/svg+xml;utf8,` + encodeURIComponent(
@@ -14,7 +13,7 @@ const defaultLogoDataUrl = `data:image/svg+xml;utf8,` + encodeURIComponent(
   `</svg>`
 );
 
-const Layout: React.FC<Props> = ({ children, onNavigate, currentRoute }) => {
+const Layout: React.FC<Props> = ({ children }) => {
   const imgRef = React.useRef<HTMLImageElement | null>(null);
 
   const handleImgError = () => {
@@ -37,8 +36,18 @@ const Layout: React.FC<Props> = ({ children, onNavigate, currentRoute }) => {
           <span className="brand-text">Heracles</span>
         </div>
         <ul className="menu">
-          <li className={currentRoute === 'home' ? 'active' : ''} onClick={() => onNavigate('home')}>Home</li>
-          <li className={currentRoute === 'about' ? 'active' : ''} onClick={() => onNavigate('about')}>About</li>
+          <li><NavLink to="/" className={({isActive}) => isActive ? 'active' : ''} end>Home</NavLink></li>
+          <li><NavLink to="/products" className={({isActive}) => isActive ? 'active' : ''}>Products</NavLink></li>
+          <li><NavLink to="/about" className={({isActive}) => isActive ? 'active' : ''}>About</NavLink></li>
+          <li><NavLink to="/contact" className={({isActive}) => isActive ? 'active' : ''}>Contact</NavLink></li>
+          <li className="admin-dropdown">
+            <span>Admin</span>
+            <ul className="admin-menu">
+              <li><NavLink to="/admin">Dashboard</NavLink></li>
+              <li><NavLink to="/admin/products">Products (admin)</NavLink></li>
+              <li><NavLink to="/admin/contacts">Contacts (admin)</NavLink></li>
+            </ul>
+          </li>
         </ul>
       </nav>
       <main className="content">{children}</main>

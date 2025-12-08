@@ -7,4 +7,4 @@
 .menu li { cursor: pointer; padding: 6px 10px; border-radius: 4px; }
 .menu li:hover { background: rgba(255,255,255,0.08); }
 .menu li.active { background: #fff; color: #222; }
-.content { padding: 20px; }
+.content { padding: 24px; }

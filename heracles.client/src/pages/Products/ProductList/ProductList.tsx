@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ProductListItem from './ProductListItem';
-import productService from '../../services/productService';
+import productService from '../../../services/productService';
 
 const ProductList = () => {
     const [products, setProducts] = useState([]);
