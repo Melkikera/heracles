@@ -29,7 +29,8 @@ const ContactsAdmin: React.FC = () => {
     setShowModal(true);
   };
 
-  const handleAdd = () => {
+    const handleAdd = () => {
+        console.log('Adding new contact');
     setEditing(null);
     setShowModal(true);
   };
@@ -37,7 +38,7 @@ const ContactsAdmin: React.FC = () => {
   return (
     <div>
       <h1>Contacts (admin)</h1>
-      <button className="btn btn-primary" onClick={handleAdd}>Add Contact</button>
+      <button className="btn btn-primary" data-toggle="modal" data-target="#modalContact" onClick={handleAdd}>Add Contact</button>
       <table className="table table-striped mt-3">
         <thead>
           <tr><th>Email</th><th>Telephone</th><th>Mobile</th><th>Actions</th></tr>

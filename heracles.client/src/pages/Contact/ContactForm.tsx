@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './contact.css';
 
@@ -60,6 +60,10 @@ export default function ContactForm({ initialContact, onSaved }: ContactFormProp
   // initialize from initialContact; parent should remount this component when initialContact changes (pass key)
   const [form, setForm] = useState<FormState>(() => makeInitial(initialContact));
 
+  useEffect(() => {
+    setForm(() => makeInitial(initialContact));
+  }, [initialContact]);
+
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value } as unknown as FormState));
@@ -94,28 +98,45 @@ export default function ContactForm({ initialContact, onSaved }: ContactFormProp
     }
   };
 
+  // IDs added so modal and form controls can be targeted by tests or bootstrap JS
+  const formId = form.id && form.id > 0 ? `contact-form-${form.id}` : 'contact-form-new';
+
   return (
-    <form onSubmit={submit} className="contact-form">
-      <label>Email</label>
-      <input type="email" name="email" value={form.email} onChange={onChange} required />
+    <form id={formId} onSubmit={submit} className="contact-form">
+      <div className="mb-3">
+        <label htmlFor={`${formId}-email`} className="form-label">Email</label>
+        <input id={`${formId}-email`} type="email" name="email" value={form.email} onChange={onChange} className="form-control" required />
+      </div>
 
-      <label>Téléphone</label>
-      <input type="tel" name="telephone" value={form.telephone} onChange={onChange} />
+      <div className="mb-3">
+        <label htmlFor={`${formId}-telephone`} className="form-label">Téléphone</label>
+        <input id={`${formId}-telephone`} type="tel" name="telephone" value={form.telephone} onChange={onChange} className="form-control" />
+      </div>
 
-      <label>Mobile</label>
-      <input type="tel" name="mobile" value={form.mobile} onChange={onChange} />
+      <div className="mb-3">
+        <label htmlFor={`${formId}-mobile`} className="form-label">Mobile</label>
+        <input id={`${formId}-mobile`} type="tel" name="mobile" value={form.mobile} onChange={onChange} className="form-control" />
+      </div>
 
-      <label>Postal address</label>
-      <textarea name="postal" rows={3} value={form.postal} onChange={onChange}></textarea>
+      <div className="mb-3">
+        <label htmlFor={`${formId}-postalAddress`} className="form-label">Postal Address</label>
+        <input id={`${formId}-postalAddress`} name="postal" value={form.postal} onChange={onChange} className="form-control" />
+      </div>
 
-      <label>Facebook</label>
-      <input name="facebook" value={form.facebook} onChange={onChange} placeholder="https://facebook.com/yourpage" />
+      <div className="mb-3">
+        <label htmlFor={`${formId}-facebook`} className="form-label">Facebook</label>
+        <input id={`${formId}-facebook`} name="facebook" value={form.facebook} onChange={onChange} className="form-control" placeholder="https://facebook.com/yourpage" />
+      </div>
 
-      <label>LinkedIn</label>
-      <input name="linkedin" value={form.linkedin} onChange={onChange} placeholder="https://linkedin.com/in/yourprofile" />
+      <div className="mb-3">
+        <label htmlFor={`${formId}-linkedIn`} className="form-label">LinkedIn</label>
+        <input id={`${formId}-linkedIn`} name="linkedin" value={form.linkedin} onChange={onChange} className="form-control" placeholder="https://linkedin.com/in/yourprofile" />
+      </div>
 
-      <label>Instagram</label>
-      <input name="instagram" value={form.instagram} onChange={onChange} placeholder="https://instagram.com/yourprofile" />
+      <div className="mb-3">
+        <label htmlFor={`${formId}-instagram`} className="form-label">Instagram</label>
+        <input id={`${formId}-instagram`} name="instagram" value={form.instagram} onChange={onChange} className="form-control" placeholder="https://instagram.com/yourprofile" />
+      </div>
 
       <div className="social-icons-preview">
         {form.facebook && (
@@ -125,15 +146,14 @@ export default function ContactForm({ initialContact, onSaved }: ContactFormProp
         )}
       </div>
 
-      <h3>Schedules</h3>
-      {Object.keys(form.schedules).map((day) => (
-        <div key={day} className="schedule-row">
-          <label>{day}</label>
-          <input value={form.schedules[day]} onChange={(e) => setForm(prev => ({ ...prev, schedules: { ...prev.schedules, [day]: e.target.value } }))} />
-        </div>
-      ))}
+      <div className="mb-3">
+        <label htmlFor={`${formId}-schedulesJson`} className="form-label">Schedules (JSON)</label>
+        <textarea id={`${formId}-schedulesJson`} name="schedulesJson" value={form.schedulesJson} onChange={onChange} className="form-control" rows={4}></textarea>
+      </div>
 
-      <button type="submit" className="btn">Send</button>
+      <div className="d-flex justify-content-end">
+        <button id={`${formId}-submit`} type="submit" className="btn btn-primary">Save</button>
+      </div>
     </form>
   );
 }

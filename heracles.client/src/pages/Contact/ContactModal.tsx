@@ -2,6 +2,7 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import ContactForm from './ContactForm';
 import './contact.css';
+import Modal from 'react-bootstrap/Modal';
 
 interface ContactModalProps {
   onClose: () => void;
@@ -15,18 +16,17 @@ const ContactModal: React.FC<ContactModalProps> = ({ onClose, contact, onSaved }
     onClose();
   };
 
+    console.log('Contact modal !')
   const modal = (
-    <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
-        <div className="modal-header">
-          <h2>Contact Form</h2>
-          <button onClick={onClose} aria-label="Close">×</button>
-        </div>
-        <div className="modal-body">
-          <ContactForm initialContact={contact} onSaved={handleSaved} />
-        </div>
-      </div>
-    </div>
+      <Modal show={true} onHide={onClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Contact Form</Modal.Title>              
+          </Modal.Header>
+        <Modal.Body>
+              <ContactForm initialContact={contact} onSaved={handleSaved} />
+          </Modal.Body>
+        
+    </Modal>
   );
 
   if (typeof document !== 'undefined') {

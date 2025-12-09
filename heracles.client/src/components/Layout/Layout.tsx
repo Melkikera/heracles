@@ -1,6 +1,9 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import './layout.css';
+import NavDropdown from 'react-bootstrap/NavDropdown';
+import Nav from 'react-bootstrap/Nav';
+
 
 interface Props {
   children: React.ReactNode;
@@ -35,20 +38,17 @@ const Layout: React.FC<Props> = ({ children }) => {
           />
           <span className="brand-text">Heracles</span>
         </div>
-        <ul className="menu">
-          <li><NavLink to="/" className={({isActive}) => isActive ? 'active' : ''} end>Home</NavLink></li>
-          <li><NavLink to="/products" className={({isActive}) => isActive ? 'active' : ''}>Products</NavLink></li>
-          <li><NavLink to="/about" className={({isActive}) => isActive ? 'active' : ''}>About</NavLink></li>
-          <li><NavLink to="/contact" className={({isActive}) => isActive ? 'active' : ''}>Contact</NavLink></li>
-          <li className="admin-dropdown">
-            <span>Admin</span>
-            <ul className="admin-menu">
-              <li><NavLink to="/admin">Dashboard</NavLink></li>
-              <li><NavLink to="/admin/products">Products (admin)</NavLink></li>
-              <li><NavLink to="/admin/contacts">Contacts (admin)</NavLink></li>
-            </ul>
-          </li>
-        </ul>
+              <Nav className="menu">
+                  <Nav.Item><NavLink to="/" className={({ isActive }) => isActive ? 'active' : ''} end>Home</NavLink></Nav.Item>
+                  <Nav.Item><NavLink to="/products" className={({ isActive }) => isActive ? 'active' : ''}>Products</NavLink></Nav.Item>
+                  <Nav.Item><NavLink to="/about" className={({ isActive }) => isActive ? 'active' : ''}>About</NavLink></Nav.Item>
+                  <Nav.Item><NavLink to="/contact" className={({ isActive }) => isActive ? 'active' : ''}>Contact</NavLink></Nav.Item>
+        <NavDropdown title="Admin" id="nav-dropdown" >
+            <NavDropdown.Item eventKey="4.1"><NavLink to="/admin">Dashboard</NavLink></NavDropdown.Item>
+            <NavDropdown.Item eventKey="4.2"><NavLink to="/admin/products">Products (admin)</NavLink></NavDropdown.Item>
+            <NavDropdown.Item eventKey="4.3"><NavLink to="/admin/contacts">Contacts (admin)</NavLink></NavDropdown.Item>                      
+        </NavDropdown>
+        </Nav>
       </nav>
       <main className="content">{children}</main>
     </div>
