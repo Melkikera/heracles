@@ -1,39 +1,35 @@
 import React from 'react';
-import { createPortal } from 'react-dom';
 import ContactForm from './ContactForm';
-import './contact.css';
-import Modal from 'react-bootstrap/Modal';
 
-interface ContactModalProps {
-  onClose: () => void;
+interface Props {
   contact?: any;
-  onSaved?: (c: any) => void;
+  onClose?: () => void;
+  onSaved?: (c: any) => void | Promise<void>;
 }
 
-const ContactModal: React.FC<ContactModalProps> = ({ onClose, contact, onSaved }) => {
+const ContactModal: React.FC<Props> = ({ contact, onClose, onSaved }) => {
+  // Ne pas appeler onClose automatiquement — laisser le parent décider de fermer (après réussite)
   const handleSaved = (saved: any) => {
     if (onSaved) onSaved(saved);
-    onClose();
   };
 
-    console.log('Contact modal !')
-  const modal = (
-      <Modal show={true} onHide={onClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Contact Form</Modal.Title>              
-          </Modal.Header>
-        <Modal.Body>
-              <ContactForm initialContact={contact} onSaved={handleSaved} />
-          </Modal.Body>
-        
-    </Modal>
+  const modalId = contact ? `contact-modal-${contact.id}` : 'modalContact';
+
+  return (
+    <div className="modal show" id={modalId} tabIndex={-1} role="dialog" style={{ display: 'block' }}>
+      <div className="modal-dialog" role="document">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title">{contact ? 'Edit Contact' : 'Add Contact'}</h5>
+            <button type="button" className="btn-close" aria-label="Close" onClick={onClose}></button>
+          </div>
+          <div className="modal-body">
+            <ContactForm contact={contact} onSaved={handleSaved} />
+          </div>
+        </div>
+      </div>
+    </div>
   );
-
-  if (typeof document !== 'undefined') {
-    return createPortal(modal, document.body);
-  }
-
-  return modal;
 };
 
 export default ContactModal;

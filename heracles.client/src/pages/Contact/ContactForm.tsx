@@ -1,100 +1,83 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './contact.css';
+import { API_KEY } from '../../constants';
 
-interface ContactDto {
-  id?: number;
-  email?: string;
-  telephone?: string;
-  mobile?: string;
-  postalAddress?: string;
-  facebook?: string;
-  linkedIn?: string;
-  instagram?: string;
-  schedulesJson?: string;
-  isMine?: boolean;
+interface Props {
+  contact?: any;
+  onSaved?: (c: any) => void;
 }
 
-interface ContactFormProps {
-  initialContact?: ContactDto;
-  onSaved?: (c: ContactDto) => void;
-}
+const ContactForm: React.FC<Props> = ({ contact, onSaved }) => {
+  const [form, setForm] = useState({
+    id: contact?.id ?? 0,
+    email: contact?.email ?? '',
+    telephone: contact?.telephone ?? '',
+    mobile: contact?.mobile ?? '',
+    postalAddress: contact?.postalAddress ?? '',
+    facebook: contact?.facebook ?? '',
+    linkedIn: contact?.linkedIn ?? '',
+    instagram: contact?.instagram ?? '',
+    schedulesJson: contact?.schedulesJson ?? '{}'
+  });
 
-interface FormState {
-  email: string;
-  telephone: string;
-  mobile: string;
-  postal: string;
-  facebook: string;
-  linkedin: string;
-  instagram: string;
-  schedules: { [day: string]: string };
-}
-
-const FacebookIcon = ({ size = 18 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-    <path d="M15 8h2V5h-2c-1.104 0-2 .896-2 2v1H11v3h2v7h3v-7h2.237L19 11h-2v-1c0-.551.449-1 1-1z" fill="currentColor" />
-  </svg>
-);
-
-function makeInitial(contact?: ContactDto): FormState {
-  return {
-    email: contact?.email || '',
-    telephone: contact?.telephone || '',
-    mobile: contact?.mobile || '',
-    facebook: contact?.facebook || '',
-    linkedin: contact?.linkedIn || '',
-    instagram: contact?.instagram || '',
-    postal: contact?.postalAddress || '',
-    schedules: contact?.schedulesJson ? (JSON.parse(contact.schedulesJson) as { [k: string]: string }) : {
-      Monday: '9:00 - 17:00',
-      Tuesday: '9:00 - 17:00',
-      Wednesday: '9:00 - 17:00',
-      Thursday: '9:00 - 17:00',
-      Friday: '9:00 - 17:00'
-    }
-  };
-}
-
-export default function ContactForm({ initialContact, onSaved }: ContactFormProps) {
-  // initialize from initialContact; parent should remount this component when initialContact changes (pass key)
-  const [form, setForm] = useState<FormState>(() => makeInitial(initialContact));
+  const [isSaving, setIsSaving] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string[]>>({});
 
   useEffect(() => {
-    setForm(() => makeInitial(initialContact));
-  }, [initialContact]);
+    setForm({
+      id: contact?.id ?? 0,
+      email: contact?.email ?? '',
+      telephone: contact?.telephone ?? '',
+      mobile: contact?.mobile ?? '',
+      postalAddress: contact?.postalAddress ?? '',
+      facebook: contact?.facebook ?? '',
+      linkedIn: contact?.linkedIn ?? '',
+      instagram: contact?.instagram ?? '',
+      schedulesJson: contact?.schedulesJson ?? '{}'
+    });
+    setErrorMessage(null);
+    setValidationErrors({});
+  }, [contact]);
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value } as unknown as FormState));
+    setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const submit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      const payload = {
-        Email: form.email,
-        Telephone: form.telephone,
-        Mobile: form.mobile,
-        PostalAddress: form.postal,
-        Facebook: form.facebook,
-        LinkedIn: form.linkedin,
-        Instagram: form.instagram,
-        SchedulesJson: JSON.stringify(form.schedules)
-      };
+    setIsSaving(true);
+    setErrorMessage(null);
+    setValidationErrors({});
 
+    try {
       let res;
-      if (initialContact && initialContact.id) {
-        res = await axios.put(`/api/admin/contacts/${initialContact.id}`, payload);
+      if (form.id && form.id > 0) {
+          res = await axios.put(`/api/contact/${form.id}`, form, { headers: { 'X-API-KEY': API_KEY } });
       } else {
-        res = await axios.post('/api/admin/contacts', payload);
+          res = await axios.post('/api/contact', form, { headers: { 'X-API-KEY': API_KEY } });
       }
 
-      alert('Contact saved');
-      if (onSaved) onSaved(res.data || {});
-    } catch (error) {
-      console.error(error);
-      alert('Failed to save contact');
+      if (onSaved) onSaved(res.data);
+    } catch (err: any) {
+      if (axios.isAxiosError(err)) {
+        const data = err.response?.data;
+        if (data && data.errors && typeof data.errors === 'object') {
+          setValidationErrors(data.errors);
+        } else if (data && (data.title || data.message)) {
+          setErrorMessage(data.title || data.message);
+        } else if (err.response && err.response.status) {
+          setErrorMessage(`Erreur serveur (${err.response.status}).`);
+        } else {
+          setErrorMessage(err.message || 'Erreur lors de la sauvegarde.');
+        }
+      } else {
+        setErrorMessage('Une erreur inattendue est survenue.');
+      }
+      console.error(err);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -102,58 +85,66 @@ export default function ContactForm({ initialContact, onSaved }: ContactFormProp
   const formId = form.id && form.id > 0 ? `contact-form-${form.id}` : 'contact-form-new';
 
   return (
-    <form id={formId} onSubmit={submit} className="contact-form">
+    <form id={formId} onSubmit={handleSubmit} aria-live="polite">
+      {errorMessage && <div className="alert alert-danger" role="alert">{errorMessage}</div>}
+
+      {Object.keys(validationErrors).length > 0 && (
+        <div className="alert alert-danger" role="alert">
+          <ul className="mb-0">
+            {Object.entries(validationErrors).map(([field, msgs]) => msgs.map((m, i) => (
+              <li key={`${field}-${i}`}>{field}: {m}</li>
+            )))}
+          </ul>
+        </div>
+      )}
+
       <div className="mb-3">
         <label htmlFor={`${formId}-email`} className="form-label">Email</label>
-        <input id={`${formId}-email`} type="email" name="email" value={form.email} onChange={onChange} className="form-control" required />
+        <input id={`${formId}-email`} name="email" value={form.email} onChange={handleChange} className="form-control" type="email" />
       </div>
 
       <div className="mb-3">
         <label htmlFor={`${formId}-telephone`} className="form-label">Téléphone</label>
-        <input id={`${formId}-telephone`} type="tel" name="telephone" value={form.telephone} onChange={onChange} className="form-control" />
+        <input id={`${formId}-telephone`} name="telephone" value={form.telephone} onChange={handleChange} className="form-control" />
       </div>
 
       <div className="mb-3">
         <label htmlFor={`${formId}-mobile`} className="form-label">Mobile</label>
-        <input id={`${formId}-mobile`} type="tel" name="mobile" value={form.mobile} onChange={onChange} className="form-control" />
+        <input id={`${formId}-mobile`} name="mobile" value={form.mobile} onChange={handleChange} className="form-control" />
       </div>
 
       <div className="mb-3">
         <label htmlFor={`${formId}-postalAddress`} className="form-label">Postal Address</label>
-        <input id={`${formId}-postalAddress`} name="postal" value={form.postal} onChange={onChange} className="form-control" />
+        <input id={`${formId}-postalAddress`} name="postalAddress" value={form.postalAddress} onChange={handleChange} className="form-control" />
       </div>
 
       <div className="mb-3">
         <label htmlFor={`${formId}-facebook`} className="form-label">Facebook</label>
-        <input id={`${formId}-facebook`} name="facebook" value={form.facebook} onChange={onChange} className="form-control" placeholder="https://facebook.com/yourpage" />
+        <input id={`${formId}-facebook`} name="facebook" value={form.facebook} onChange={handleChange} className="form-control" />
       </div>
 
       <div className="mb-3">
         <label htmlFor={`${formId}-linkedIn`} className="form-label">LinkedIn</label>
-        <input id={`${formId}-linkedIn`} name="linkedin" value={form.linkedin} onChange={onChange} className="form-control" placeholder="https://linkedin.com/in/yourprofile" />
+        <input id={`${formId}-linkedIn`} name="linkedIn" value={form.linkedIn} onChange={handleChange} className="form-control" />
       </div>
 
       <div className="mb-3">
         <label htmlFor={`${formId}-instagram`} className="form-label">Instagram</label>
-        <input id={`${formId}-instagram`} name="instagram" value={form.instagram} onChange={onChange} className="form-control" placeholder="https://instagram.com/yourprofile" />
-      </div>
-
-      <div className="social-icons-preview">
-        {form.facebook && (
-          <a className="social-link" href={form.facebook} target="_blank" rel="noreferrer noopener" aria-label="Facebook">
-            <FacebookIcon />
-          </a>
-        )}
+        <input id={`${formId}-instagram`} name="instagram" value={form.instagram} onChange={handleChange} className="form-control" />
       </div>
 
       <div className="mb-3">
         <label htmlFor={`${formId}-schedulesJson`} className="form-label">Schedules (JSON)</label>
-        <textarea id={`${formId}-schedulesJson`} name="schedulesJson" value={form.schedulesJson} onChange={onChange} className="form-control" rows={4}></textarea>
+        <textarea id={`${formId}-schedulesJson`} name="schedulesJson" value={form.schedulesJson} onChange={handleChange} className="form-control" rows={4} />
       </div>
 
       <div className="d-flex justify-content-end">
-        <button id={`${formId}-submit`} type="submit" className="btn btn-primary">Save</button>
+        <button id={`${formId}-submit`} type="submit" className="btn btn-primary" disabled={isSaving}>
+          {isSaving ? 'Saving...' : 'Save'}
+        </button>
       </div>
     </form>
   );
-}
+};
+
+export default ContactForm;

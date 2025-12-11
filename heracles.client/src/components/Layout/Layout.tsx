@@ -39,14 +39,13 @@ const Layout: React.FC<Props> = ({ children }) => {
           <span className="brand-text">Heracles</span>
         </div>
               <Nav className="menu">
-                  <Nav.Item><NavLink to="/" className={({ isActive }) => isActive ? 'active' : ''} end>Home</NavLink></Nav.Item>
-                  <Nav.Item><NavLink to="/products" className={({ isActive }) => isActive ? 'active' : ''}>Products</NavLink></Nav.Item>
-                  <Nav.Item><NavLink to="/about" className={({ isActive }) => isActive ? 'active' : ''}>About</NavLink></Nav.Item>
-                  <Nav.Item><NavLink to="/contact" className={({ isActive }) => isActive ? 'active' : ''}>Contact</NavLink></Nav.Item>
+                  <Nav.Link href="/" className={({ isActive }) => isActive ? 'active' : ''}>Home</Nav.Link>
+                  <Nav.Link href="/about" className={({ isActive }) => isActive ? 'active' : ''}>About</Nav.Link>
+                  <Nav.Link href="/contact" className={({ isActive }) => isActive ? 'active' : ''}>Contact</Nav.Link>
         <NavDropdown title="Admin" id="nav-dropdown" >
-            <NavDropdown.Item eventKey="4.1"><NavLink to="/admin">Dashboard</NavLink></NavDropdown.Item>
-            <NavDropdown.Item eventKey="4.2"><NavLink to="/admin/products">Products (admin)</NavLink></NavDropdown.Item>
-            <NavDropdown.Item eventKey="4.3"><NavLink to="/admin/contacts">Contacts (admin)</NavLink></NavDropdown.Item>                      
+            <NavDropdown.Item eventKey="4.1" href="/admin">Dashboard</NavDropdown.Item>
+            <NavDropdown.Item eventKey="4.2" href="/admin/products">Products (admin)</NavDropdown.Item>
+            <NavDropdown.Item eventKey="4.3" href="/admin/contacts">Contacts (admin) </NavDropdown.Item>                      
         </NavDropdown>
         </Nav>
       </nav>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ProductForm from '../../pages/Products/ProductForm/ProductForm';
+import { API_KEY } from '../../constants';
 
 const ProductsAdmin: React.FC = () => {
   const [products, setProducts] = useState<any[]>([]);
@@ -8,7 +9,7 @@ const ProductsAdmin: React.FC = () => {
 
   const load = async () => {
     try {
-      const res = await axios.get('/api/products', { headers: { 'X-API-KEY': 'dev-secret' } });
+        const res = await axios.get('/api/products', { headers: { 'X-API-KEY': API_KEY } });
       setProducts(res.data);
     } catch (err) {
       console.error(err);
@@ -19,11 +20,13 @@ const ProductsAdmin: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     if (!confirm('Delete this product?')) return;
-    await axios.delete(`/api/products/${id}`, { headers: { 'X-API-KEY': 'dev-secret' } });
+      await axios.delete(`/api/products/${id}`, { headers: { 'X-API-KEY': API_KEY } });
     load();
   };
 
-  const handleEdit = (p: any) => {
+    const handleEdit = (p: any) => {
+
+        console.log('Edit a product',p)
     setEditing(p);
   };
 

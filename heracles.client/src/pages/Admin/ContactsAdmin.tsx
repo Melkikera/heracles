@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ContactModal from '../Contact/ContactModal';
+import { API_KEY } from '../../constants';
 
 const ContactsAdmin: React.FC = () => {
   const [contacts, setContacts] = useState<any[]>([]);
   const [editing, setEditing] = useState<any | null>(null);
-  const [showModal, setShowModal] = useState(false);
-
+    const [showModal, setShowModal] = useState(false);
   const load = async () => {
-    try {
-      const res = await axios.get('/api/admin/contacts', { headers: { 'X-API-KEY': 'dev-secret' } });
+      try {
+          const res = await axios.get('/api/admin/contacts', { headers: { 'X-API-KEY': API_KEY } });
       setContacts(res.data);
     } catch (err) {
       console.error(err);
@@ -20,7 +20,7 @@ const ContactsAdmin: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     if (!confirm('Delete this contact?')) return;
-    await axios.delete(`/api/admin/contacts/${id}`, { headers: { 'X-API-KEY': 'dev-secret' } });
+      await axios.delete(`/api/admin/contacts/${id}`, { headers: { 'X-API-KEY': API_KEY } });
     load();
   };
 
@@ -38,7 +38,7 @@ const ContactsAdmin: React.FC = () => {
   return (
     <div>
       <h1>Contacts (admin)</h1>
-      <button className="btn btn-primary" data-toggle="modal" data-target="#modalContact" onClick={handleAdd}>Add Contact</button>
+      <button className="btn btn-primary" onClick={handleAdd}>Add Contact</button>
       <table className="table table-striped mt-3">
         <thead>
           <tr><th>Email</th><th>Telephone</th><th>Mobile</th><th>Actions</th></tr>
