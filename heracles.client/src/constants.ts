@@ -57,13 +57,15 @@ export const AUTH = {
 
 // Routes client standardisées
 export const ROUTES = {
-  HOME: '/',
-  LOGIN: '/login',
-  LOGOUT: '/logout',
-  DASHBOARD: '/dashboard',
-  USERS: '/users',
-  SETTINGS: '/settings',
-  NOT_FOUND: '/404',
+    HOME: '/',
+    LOGIN: '/login',
+    LOGOUT: '/logout',
+    DASHBOARD: '/dashboard',
+    USERS: '/users',
+    SETTINGS: '/settings',
+    NOT_FOUND: '/404',
+    CONTACTS: '/api/contacts',
+    PRODUCTS: '/api/products'
 } as const;
 
 // Expressions régulières et formats communs

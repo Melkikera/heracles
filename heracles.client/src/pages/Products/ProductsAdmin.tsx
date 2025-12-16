@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import ProductForm from '../../pages/Products/ProductForm/ProductForm';
 import { API_KEY } from '../../constants';
+import ProductModal from '../Products/ProductModal';
 
 const ProductsAdmin: React.FC = () => {
   const [products, setProducts] = useState<any[]>([]);
-  const [editing, setEditing] = useState<any | null>(null);
+    const [editing, setEditing] = useState<any | null>(null);
+    const [showModal, setShowModal] = useState(false);
 
   const load = async () => {
     try {
@@ -27,13 +28,20 @@ const ProductsAdmin: React.FC = () => {
     const handleEdit = (p: any) => {
 
         console.log('Edit a product',p)
-    setEditing(p);
+        setEditing(p);
+        setShowModal(true);
   };
+
+    const handleAdd = () => {
+        console.log('Adding new product');
+        setEditing(null);
+        setShowModal(true);
+    };
 
   return (
     <div>
       <h1>Products (admin)</h1>
-      <ProductForm key={editing?.id ?? 'new'} onProductAdded={() => load()} initialProduct={editing} />
+        <button className="btn btn-primary" onClick={handleAdd}>Add Product</button>
 
       <table className="table table-striped mt-3">
         <thead>
@@ -44,15 +52,19 @@ const ProductsAdmin: React.FC = () => {
             <tr key={p.id}>
               <td>{p.name}</td>
               <td>{p.price}</td>
-              <td>
-                <button className="btn btn-sm btn-secondary me-2" onClick={() => handleEdit(p)}>Edit</button>
+                  <td>
+                      <button className="btn btn-sm btn-secondary me-2" onClick={() => handleEdit(p)}>Edit</button>
+      
                 <button className="btn btn-sm btn-danger" onClick={() => handleDelete(p.id)}>Delete</button>
               </td>
             </tr>
           ))}
         </tbody>
-      </table>
-    </div>
+          </table>
+          {showModal && <ProductModal product={editing} onClose={() => setShowModal(false)} onSaved={load} />}                      
+        </div>      
+      
+        
   );
 };
 
