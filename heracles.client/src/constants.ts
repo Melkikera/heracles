@@ -64,8 +64,10 @@ export const ROUTES = {
     USERS: '/users',
     SETTINGS: '/settings',
     NOT_FOUND: '/404',
-    CONTACTS: '/api/contacts',
-    PRODUCTS: '/api/products'
+    ADM_CONTACTS: '/api/admin/contacts',
+    CONTACT: '/api/contact',
+    PRODUCTS: '/api/products',
+    SUMMARY: '/api/admin/summary',
 } as const;
 
 // Expressions régulières et formats communs

@@ -1,12 +1,13 @@
 import React from 'react';
 import './dashboard.css';
+import { ROUTES } from '../../constants';
 
 const Dashboard: React.FC = () => {
   const [counts, setCounts] = React.useState<{ [key: string]: number }>({});
 
   React.useEffect(() => {
-    // fetch counts for admin tables
-    fetch('/api/admin/summary')
+      // fetch counts for admin tables
+      fetch(ROUTES.SUMMARY)
       .then(r => r.json())
       .then(setCounts)
       .catch(() => {});

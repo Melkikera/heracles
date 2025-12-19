@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { API_KEY } from '../../constants';
+import { API_KEY, ROUTES } from '../../constants';
 
 interface Props {
   contact?: any;
@@ -53,10 +53,10 @@ const ContactForm: React.FC<Props> = ({ contact, onSaved }) => {
 
     try {
       let res;
-      if (form.id && form.id > 0) {
-          res = await axios.put(`/api/contact/${form.id}`, form, { headers: { 'X-API-KEY': API_KEY } });
-      } else {
-          res = await axios.post('/api/contact', form, { headers: { 'X-API-KEY': API_KEY } });
+        if (form.id && form.id > 0) {
+            res = await axios.put(ROUTES.ADM_CONTACTS + `/${form.id}`, form, { headers: { 'X-API-KEY': API_KEY } });
+        } else {
+            res = await axios.post(ROUTES.ADM_CONTACTS, form, { headers: { 'X-API-KEY': API_KEY } });
       }
 
       if (onSaved) onSaved(res.data);

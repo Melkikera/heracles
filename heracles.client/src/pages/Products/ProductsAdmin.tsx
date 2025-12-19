@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { API_KEY } from '../../constants';
+import { API_KEY, ROUTES } from '../../constants';
 import ProductModal from '../Products/ProductModal';
 
 const ProductsAdmin: React.FC = () => {
@@ -9,8 +9,8 @@ const ProductsAdmin: React.FC = () => {
     const [showModal, setShowModal] = useState(false);
 
   const load = async () => {
-    try {
-        const res = await axios.get('/api/products', { headers: { 'X-API-KEY': API_KEY } });
+      try {
+          const res = await axios.get(ROUTES.PRODUCTS, { headers: { 'X-API-KEY': API_KEY } });
       setProducts(res.data);
     } catch (err) {
       console.error(err);
@@ -20,8 +20,8 @@ const ProductsAdmin: React.FC = () => {
   useEffect(() => { load(); }, []);
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Delete this product?')) return;
-      await axios.delete(`/api/products/${id}`, { headers: { 'X-API-KEY': API_KEY } });
+      if (!confirm('Delete this product?')) return;
+      await axios.delete(ROUTES.PRODUCTS +`/${id}`, { headers: { 'X-API-KEY': API_KEY } });
     load();
   };
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { API_KEY } from '../../constants';
+import { API_KEY,ROUTES } from '../../constants';
 
 interface Props {
     product?: any;
@@ -42,10 +42,10 @@ const ProductModalForm: React.FC<Props> = ({ product, onSaved }) => {
 
     try {
       let res;
-      if (form.id && form.id > 0) {
-          res = await axios.put(`/api/products/${form.id}`, form, { headers: { 'X-API-KEY': API_KEY } });
+        if (form.id && form.id > 0) {
+            res = await axios.put(ROUTES.PRODUCTS + `/${form.id}`, form, { headers: { 'X-API-KEY': API_KEY } });
       } else {
-          res = await axios.post('/api/products', form, { headers: { 'X-API-KEY': API_KEY } });
+            res = await axios.post(ROUTES.PRODUCTS, form, { headers: { 'X-API-KEY': API_KEY } });
       }
 
       if (onSaved) onSaved(res.data);

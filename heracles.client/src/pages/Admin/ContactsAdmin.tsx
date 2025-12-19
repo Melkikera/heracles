@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ContactModal from '../Contact/ContactModal';
-import { API_KEY } from '../../constants';
+import { API_KEY,ROUTES } from '../../constants';
 
 const ContactsAdmin: React.FC = () => {
   const [contacts, setContacts] = useState<any[]>([]);
@@ -9,7 +9,7 @@ const ContactsAdmin: React.FC = () => {
     const [showModal, setShowModal] = useState(false);
   const load = async () => {
       try {
-          const res = await axios.get('/api/admin/contacts', { headers: { 'X-API-KEY': API_KEY } });
+          const res = await axios.get(ROUTES.ADM_CONTACTS, { headers: { 'X-API-KEY': API_KEY } });
       setContacts(res.data);
     } catch (err) {
       console.error(err);
@@ -20,7 +20,7 @@ const ContactsAdmin: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     if (!confirm('Delete this contact?')) return;
-      await axios.delete(`/api/admin/contacts/${id}`, { headers: { 'X-API-KEY': API_KEY } });
+      await axios.delete(ROUTES.ADM_CONTACTS +`/${id}`, { headers: { 'X-API-KEY': API_KEY } });
     load();
   };
 
