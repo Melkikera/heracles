@@ -68,6 +68,7 @@ export const ROUTES = {
     CONTACT: '/api/contact',
     PRODUCTS: '/api/products',
     SUMMARY: '/api/admin/summary',
+    MINE: '/api/contact/mine',
 } as const;
 
 // Expressions régulières et formats communs

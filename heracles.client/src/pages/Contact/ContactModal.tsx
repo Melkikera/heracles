@@ -16,7 +16,7 @@ const ContactModal: React.FC<Props> = ({ contact, onClose, onSaved }) => {
   const modalId = contact ? `contact-modal-${contact.id}` : 'modalContact';
 
   return (
-    <div className="modal show" id={modalId} tabIndex={-1} role="dialog" style={{ display: 'block' }}>
+    <div className="modal" id={modalId} tabIndex={-1} role="dialog" style={{ display: 'block' }}>
       <div className="modal-dialog" role="document">
         <div className="modal-content">
           <div className="modal-header">
