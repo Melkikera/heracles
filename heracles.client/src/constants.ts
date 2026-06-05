@@ -32,7 +32,7 @@ export const API_BASE_URL =
   readEnv('REACT_APP_API_URL') ??
   (typeof location !== 'undefined' ? `${location.origin}/api` : 'http://localhost:3000/api');
 
-export const API_KEY = '9757b040-0f25-4114-b4c9-74481206caca';
+export const API_KEY = readEnv('VITE_API_KEY') ?? 'dev-secret';
 
 // Timeout par défaut pour les requêtes HTTP (ms)
 export const DEFAULT_TIMEOUT_MS = 30_000;

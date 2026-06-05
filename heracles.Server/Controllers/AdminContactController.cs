@@ -1,4 +1,4 @@
-using heracles.Server.Data;
+VITE_API_KEY=dev-secretusing heracles.Server.Data;
 using heracles.Server.Entities;
 using heracles.Server.Models;
 using heracles.Server.Repositories;

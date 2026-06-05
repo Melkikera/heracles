@@ -16,7 +16,7 @@ namespace heracles.Server.Migrations
                 keyColumn: "Id",
                 keyValue: 1,
                 column: "SubmittedAt",
-                value: new DateTime(2025, 12, 5, 11, 22, 28, 123, DateTimeKind.Local).AddTicks(6733));
+                value: new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc));
         }
 
         /// <inheritdoc />
@@ -27,7 +27,7 @@ namespace heracles.Server.Migrations
                 keyColumn: "Id",
                 keyValue: 1,
                 column: "SubmittedAt",
-                value: new DateTime(2025, 12, 2, 16, 39, 21, 76, DateTimeKind.Local).AddTicks(6159));
+                value: new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc));
         }
     }
 }

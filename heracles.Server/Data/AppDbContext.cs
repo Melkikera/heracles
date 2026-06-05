@@ -39,7 +39,7 @@ namespace heracles.Server.Data
                 LinkedIn = "https://linkedin.com/in/myprofile",
                 Instagram = "https://instagram.com/myprofile",
                 SchedulesJson = "{\"Monday\":\"9:00-17:00\",\"Tuesday\":\"9:00-17:00\",\"Wednesday\":\"9:00-17:00\",\"Thursday\":\"9:00-17:00\",\"Friday\":\"9:00-17:00\"}",
-                SubmittedAt = DateTime.Now,
+                SubmittedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                 IsMine = true
             });
         }

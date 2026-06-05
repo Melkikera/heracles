@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace heracles.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class SeedContact : Migration
+    public partial class FixSeedContactDateTime : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,7 +16,7 @@ namespace heracles.Server.Migrations
                 keyColumn: "Id",
                 keyValue: 1,
                 column: "SubmittedAt",
-                value: new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc));
+                value: new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc));
         }
 
         /// <inheritdoc />
@@ -27,7 +27,7 @@ namespace heracles.Server.Migrations
                 keyColumn: "Id",
                 keyValue: 1,
                 column: "SubmittedAt",
-                value: new DateTime(2025, 12, 2, 15, 7, 15, 943, DateTimeKind.Utc).AddTicks(5770));
+                value: new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc));
         }
     }
 }

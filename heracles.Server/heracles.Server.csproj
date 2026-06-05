@@ -6,8 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <SpaRoot>..\heracles.client</SpaRoot>
     <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
-    <SpaProxyServerUrl>https://localhost:50336</SpaProxyServerUrl>    
-    <UserSecretsId>UniqueIdentifyingString</UserSecretsId>    
+    <SpaProxyServerUrl>https://localhost:50336</SpaProxyServerUrl>
+    <UserSecretsId>UniqueIdentifyingString</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,16 +23,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.1" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
-    <!--<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Design" Version="1.1.0" />-->
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.1" />
+    <!--<PackageReference Include="Npgsql.EntityFrameworkCore.Postgres Version="10.0.0" />-->
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\heracles.client\heracles.client.esproj">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-  </ItemGroup>
-
 </Project>

@@ -1,8 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { Nav, NavDropdown } from 'react-bootstrap';
 import './layout.css';
-import NavDropdown from 'react-bootstrap/NavDropdown';
-import Nav from 'react-bootstrap/Nav';
 
 
 interface Props {
@@ -39,9 +38,9 @@ const Layout: React.FC<Props> = ({ children }) => {
           <span className="brand-text">Heracles</span>
         </div>
               <Nav className="menu">
-                  <Nav.Link href="/" className={({ isActive }) => isActive ? 'active' : ''}>Home</Nav.Link>
-                  <Nav.Link href="/about" className={({ isActive }) => isActive ? 'active' : ''}>About</Nav.Link>
-                  <Nav.Link href="/contact" className={({ isActive }) => isActive ? 'active' : ''}>Contact</Nav.Link>
+                  <NavLink to="/" className={({ isActive }) => isActive ? 'active' : ''}>Home</NavLink>
+                  <NavLink to="/about" className={({ isActive }) => isActive ? 'active' : ''}>About</NavLink>
+                  <NavLink to="/contact" className={({ isActive }) => isActive ? 'active' : ''}>Contact</NavLink>
         <NavDropdown title="Admin" id="nav-dropdown" >
             <NavDropdown.Item eventKey="4.1" href="/admin">Dashboard</NavDropdown.Item>
             <NavDropdown.Item eventKey="4.2" href="/admin/products">Products (admin)</NavDropdown.Item>
