@@ -1,46 +1,30 @@
-import axios from 'axios';
+// src/services/productService.ts
+import apiClient from '../api/apiClient';
+import type { PaginatedProducts, Product, ProductCreateInput, ProductUpdateInput } from '../types/product';
 
-interface Product {
-    id?: number;
-    name: string;
-    price: number;
-}
+export const productService = {
+  getPaginated: async (params: { page: number; pageSize: number; search?: string; category?: string; isActive?: string }) => {
+    console.log('Fetching paginated products with params:', params);
+    const response = await apiClient.get<PaginatedProducts>('/products/paginated', { params });
+    return response.data;
+  },
 
-const baseURL = '/api/products';
+  getById: async (id: number) => {
+    const response = await apiClient.get<Product>(`/products/${id}`);
+    return response.data;
+  },
 
-const productService = {
-    getAllProducts: async (): Promise<Product[]> => {
-        try {
-            const response = await axios.get(
-                baseURL,
-                {
-                    timeout: 3000,
-                    headers: {
-                        Accept: 'application/json',
-                    },
-                },
-            );
-            return response.data as Product[];
-        } catch (err: unknown) {
-            if (axios.isAxiosError(err) && err.code === 'ECONNABORTED') {
-                console.log('The request timed out.');
-            } else {
-                console.log(err);
-            }
-            return [];
-        }
-    },
-    addProduct: async (product: Product) => {
-        const response = await axios.post(baseURL, product);
-        return response.data as Product;
-    },
-    deleteProduct: async (id: number) => {
-        const response = await axios.delete(`${baseURL}/${id}`);
-        return response.data;
-    },
-    updateProduct: async (id: number, product: Product) => {
-        const response = await axios.put(`${baseURL}/${id}`, product);
-        return response.data as Product;
-    }
+  create: async (input: ProductCreateInput) => {
+    const response = await apiClient.post<Product>('/products', input);
+    return response.data;
+  },
+
+  update: async (id: number, input: ProductUpdateInput) => {
+    const response = await apiClient.put<Product>(`/products/${id}`, input);
+    return response.data;
+  },
+
+  remove: async (id: number) => {
+    await apiClient.delete(`/products/${id}`);
+  },
 };
-export default productService;

@@ -75,6 +75,15 @@ const Layout: React.FC<Props> = ({ children }) => {
                 <NavLink to="/products" className="nav-link">
                   📦 Produits
                 </NavLink>
+                <NavLink to="/backlog" className="nav-link">
+                  📝 Backlog
+                </NavLink>
+                <NavLink to="/roadmap" className="nav-link">
+                  🛣️ Roadmap
+                </NavLink>
+                <NavLink to="/feedback" className="nav-link">
+                  💬 Feedback
+                </NavLink>
                 <NavLink to="/dashboard" className="nav-link">
                   📊 Dashboard
                 </NavLink>
@@ -133,8 +142,12 @@ const Layout: React.FC<Props> = ({ children }) => {
               <ul className="footer-links">
                 <li><NavLink to="/">Accueil</NavLink></li>
                 <li><NavLink to="/products">Produits</NavLink></li>
+                <li><NavLink to="/backlog">Backlog</NavLink></li>
+                <li><NavLink to="/roadmap">Roadmap</NavLink></li>
+                <li><NavLink to="/feedback">Feedback</NavLink></li>
                 <li><NavLink to="/dashboard">Dashboard</NavLink></li>
                 <li><NavLink to="/about">À propos</NavLink></li>
+                
               </ul>
             </div>
 

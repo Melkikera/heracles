@@ -1,0 +1,5 @@
+/* FeedbackList.css */
+.feedback-list {
+  display: grid;
+  gap: 1rem;
+}

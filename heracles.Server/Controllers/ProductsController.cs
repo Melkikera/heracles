@@ -1,59 +1,104 @@
-﻿using heracles.Server.Entities;
-using heracles.Server.Repositories;
-using Microsoft.AspNetCore.Mvc;
-
+﻿// Controllers/ProductController.cs
 namespace heracles.Server.Controllers
 {
+    using heracles.Server.DTOs;
+    using heracles.Server.Services.Interfaces;
+    using Microsoft.AspNetCore.Mvc;
+    using System.Threading.Tasks;
+
     [ApiController]
-    [Route("api/[controller]")]
-    public class ProductsController : ControllerBase
+    [Route("api/products")]
+    public class ProductController : ControllerBase
     {
-        private readonly IProductRepository _repository;
-        public ProductsController(IProductRepository repository)
+        private readonly IProductService _productService;
+
+        public ProductController(IProductService productService)
         {
-            _repository = repository;
+            _productService = productService;
         }
+
+        // GET: api/products
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts()
+        public async Task<IEnumerable<ProductDTO>> GetAll()
         {
-            var products = await _repository.GetAllProductsAsync();
-            return Ok(products); // Returns only the list of products
+            return await _productService.GetAllAsync();
         }
+
+        // GET: api/products/{id}
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetProductById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var product = await _repository.GetProductByIdAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-            return Ok(product); // Returns only the product data
+            var product = await _productService.GetByIdAsync(id);
+            if (product == null) return NotFound();
+            return Ok(product);
         }
+
+        // GET: api/products/paginated?page=1&pageSize=10
+        [HttpGet("paginated")]
+        public async Task<PaginatedProductsDTO> GetPaginated(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
+        {
+            return await _productService.GetPaginatedAsync(page, pageSize);
+        }
+
+        // GET: api/products/search?term=xxx&page=1&pageSize=10
+        [HttpGet("search")]
+        public async Task<PaginatedProductsDTO> Search(
+            [FromQuery] string term,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
+        {
+            return await _productService.SearchAsync(term, page, pageSize);
+        }
+
+        // GET: api/products/category/{category}
+        [HttpGet("category/{category}")]
+        public async Task<IEnumerable<ProductDTO>> GetByCategory(string category)
+        {
+            return await _productService.GetByCategoryAsync(category);
+        }
+
+        // GET: api/products/active
+        [HttpGet("active")]
+        public async Task<IEnumerable<ProductDTO>> GetActive()
+        {
+            return await _productService.GetActiveAsync();
+        }
+
+        // POST: api/products
         [HttpPost]
-        public async Task<IActionResult> AddProduct([FromBody] Product product)
+        public async Task<IActionResult> Create(ProductCreateDTO dto)
         {
-            if (product == null)
-            {
-                return BadRequest();
-            }
-            await _repository.AddProductAsync(product);
-            return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, product);
+            // Remplace par ton authentification réelle
+            var userId = GetUserIdFromRequest();
+
+            var created = await _productService.CreateAsync(dto, userId);
+            return CreatedAtAction("GetById", new { id = created.Id }, created);
         }
+
+        // PUT: api/products/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, [FromBody] Product product)
+        public async Task<IActionResult> Update(int id, ProductUpdateDTO dto)
         {
-            if (product == null || id != product.Id)
-            {
-                return BadRequest();
-            }
-            await _repository.UpdateProductAsync(product);
+            var updated = await _productService.UpdateAsync(id, dto);
+            if (updated == null) return NotFound();
+            return Ok(updated);
+        }
+
+        // DELETE: api/products/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var deleted = await _productService.DeleteAsync(id);
+            if (!deleted) return NotFound();
             return NoContent();
         }
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProduct(int id)
+
+        private int GetUserIdFromRequest()
         {
-            await _repository.DeleteProductAsync(id);
-            return NoContent();
+            // Example with Authentication
+            return 1; // placeholder
         }
     }
 }

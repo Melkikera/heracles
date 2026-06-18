@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { API_KEY,ROUTES } from '../../constants';
+import type { Product } from '../../types/product';
 
 interface Props {
-    product?: any;
+    product?: Product;
     onClose?: () => void;
   onSaved?: (c: any) => void;
 }

@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using heracles.Server.Repositories;
+using heracles.Server.Interfaces;
 
 namespace heracles.Server.Controllers
 {
@@ -20,7 +21,7 @@ namespace heracles.Server.Controllers
         [HttpGet("keywords")]
         public async Task<IActionResult> GetKeywordStats([FromQuery] int minWordLength = 3, [FromQuery] int top = 20)
         {
-            var products = await _repo.GetAllProductsAsync();
+            var products = await _repo.GetAllAsync();
             var rx = new Regex(@"\W+", RegexOptions.Compiled);
             var counts = products
                 .SelectMany(p => rx.Split(p.Name ?? string.Empty)
@@ -37,8 +38,8 @@ namespace heracles.Server.Controllers
         [HttpGet("prices")]
         public async Task<IActionResult> GetPriceBuckets([FromQuery] decimal threshold = 500m)
         {
-            var products = await _repo.GetAllProductsAsync();
-            var total = products.Count;
+            var products = await _repo.GetAllAsync();
+            var total = products.Count();
             var below = products.Count(p => p.Price < threshold);
             var aboveOrEq = total - below;
             var belowAvg = below > 0 ? products.Where(p => p.Price < threshold).Average(p => p.Price) : 0m;

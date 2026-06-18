@@ -1,0 +1,5 @@
+/* RoadmapList.css */
+.roadmap-list {
+  display: grid;
+  gap: 1rem;
+}
