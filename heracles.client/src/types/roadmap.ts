@@ -43,3 +43,15 @@ export interface RoadmapItemCreate {
 export interface RoadmapItemUpdate extends RoadmapItemCreate {
   id: number;
 }
+
+export type RoadmapTimelineItem = {
+  id: number;
+  title: string;
+  quarter: string;
+  status: string;
+  startDate: string | null;
+  endDate: string | null;
+  backlogItemId: number | null;
+  backlogItemTitle: string | null;
+  backlogItemType: string | null;
+};

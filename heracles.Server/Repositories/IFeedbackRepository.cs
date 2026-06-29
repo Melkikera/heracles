@@ -9,6 +9,7 @@
         Task<IEnumerable<Feedback>> GetByBacklogItemAsync(long backlogItemId);
         Task<IEnumerable<Feedback>> GetBySourceAsync(string source);
         Task<IEnumerable<Feedback>> GetByStatusAsync(string status);
-        Task<IEnumerable<Feedback>> GetCreatedByAsync(long userId);
+        Task<IEnumerable<Feedback>> GetCreatedByAsync(long userId);        
+
     }
 }

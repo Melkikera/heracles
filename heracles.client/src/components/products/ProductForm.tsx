@@ -1,25 +1,23 @@
 // src/components/products/ProductForm.tsx
 import { useState } from 'react';
-import type { Product, ProductCreateInput } from '../../types/product';
+import type { ProductFormValues } from '../../types/product';
 
 export function ProductForm({
   initialValue,
   onSubmit,
   onCancel,
 }: {
-  initialValue?: Product;
-  onSubmit: (values: ProductCreateInput) => void | Promise<void>;
+  initialValue?: Partial<ProductFormValues> & { id?: number };
+  onSubmit: (values: ProductFormValues) => void | Promise<void>;
   onCancel: () => void;
 }) {
-  const [form, setForm] = useState<ProductCreateInput>({
+  const [form, setForm] = useState<ProductFormValues>({
     name: initialValue?.name ?? '',
     price: initialValue?.price ?? 0,
     description: initialValue?.description ?? '',
     category: initialValue?.category ?? '',
     stockQuantity: initialValue?.stockQuantity ?? 0,
     isActive: initialValue?.isActive ?? true,
-    sku: initialValue?.sku ?? '',
-    discountPercentage: initialValue?.discountPercentage ?? null,
   });
 
   return (

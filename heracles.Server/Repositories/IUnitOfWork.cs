@@ -1,6 +1,7 @@
 ﻿// Data/Repositories/IUnitOfWork.cs
 namespace heracles.Server.Repositories
 {
+    using heracles.Server.Entities;
     using System.Threading.Tasks;
 
     public interface IUnitOfWork
@@ -8,7 +9,8 @@ namespace heracles.Server.Repositories
         IBacklogRepository BacklogItems { get; }
         IRoadmapRepository RoadmapItems { get; }
         IFeedbackRepository Feedbacks { get; }
-        IUserRepository Users { get; }
+        IRepository<User> Users { get; }
         Task<int> CommitAsync();
+
     }
 }

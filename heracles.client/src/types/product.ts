@@ -63,3 +63,15 @@ export type ProductFilters = {
   page: number;
   pageSize: number;
 };
+
+export type ProductFormValues = {
+  name: string;
+  description?: string;
+  price: number;
+  category?: string;
+  isActive: boolean;
+  stockQuantity: number;
+  sku?: string;
+  discountPercentage?: number;
+  
+};

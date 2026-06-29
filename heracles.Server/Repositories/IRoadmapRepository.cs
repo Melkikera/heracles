@@ -10,5 +10,6 @@
         Task<IEnumerable<RoadmapItem>> GetByQuarterAsync(string quarter);
         Task<IEnumerable<RoadmapItem>> GetByDateRangeAsync(System.DateTime start, System.DateTime end);
         Task<IEnumerable<RoadmapItem>> GetCreatedByAsync(long userId);
+
     }
 }

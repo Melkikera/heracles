@@ -15,6 +15,7 @@
             DbContext = dbContext;
             DbSet = DbContext.Set<T>();
         }
+        public IQueryable<T> Query() => DbSet.AsQueryable();
 
         public virtual async Task<T?> GetByIdAsync(long id)
         {

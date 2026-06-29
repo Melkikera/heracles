@@ -1,5 +1,5 @@
 import apiClient from '../api/apiClient';
-import type { RoadmapItem ,RoadmapItemCreate} from '../types/roadmap';
+import type { RoadmapItem ,RoadmapItemCreate, RoadmapTimelineItem} from '../types/roadmap';
 
 export const roadmapService = {
   getAll: async () => {
@@ -40,6 +40,10 @@ export const roadmapService = {
 
   getByDateRange: async (start: string, end: string) => {
     const response = await apiClient.get<RoadmapItem[]>(`/roadmap/dates?start=${start}&end=${end}`);
+    return response.data;
+  },
+    getTimeline: async () => {
+    const response = await apiClient.get<RoadmapTimelineItem[]>('/roadmap/timeline');
     return response.data;
   },
 };

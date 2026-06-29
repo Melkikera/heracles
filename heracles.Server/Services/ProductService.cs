@@ -1,10 +1,12 @@
 ﻿// Services/ProductService.cs
 namespace heracles.Server.Services
 {
+    using heracles.Server.Data;
+    using heracles.Server.DTOs;
     using heracles.Server.Entities;
     using heracles.Server.Interfaces;
-    using heracles.Server.DTOs;
     using heracles.Server.Services.Interfaces;
+    using Microsoft.EntityFrameworkCore;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -12,10 +14,12 @@ namespace heracles.Server.Services
     public class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
+        private readonly AppDbContext _context;
 
-        public ProductService(IProductRepository productRepository)
+        public ProductService(IProductRepository productRepository, AppDbContext context)
         {
             _productRepository = productRepository;
+            _context = context;
         }
 
         public async Task<IEnumerable<ProductDTO>> GetAllAsync()
@@ -84,31 +88,85 @@ namespace heracles.Server.Services
             return products.Select(ToDTO);
         }
 
-        public async Task<PaginatedProductsDTO> GetPaginatedAsync(int pageNumber, int pageSize)
+        public async Task<PaginatedProductsDTO> GetPaginatedAsync(
+       string? search,
+       string? category,
+       bool? isActive,
+       int page,
+       int pageSize)
         {
-            var paginated = await _productRepository.GetPaginatedAsync(pageNumber, pageSize);
+            var query = _context.Products.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(p =>
+                    p.Name.Contains(search) ||
+                    (p.Description != null && p.Description.Contains(search)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(category))
+            {
+                query = query.Where(p => p.Category != null && p.Category.Contains(category));
+            }
+
+            if (isActive.HasValue)
+            {
+                query = query.Where(p => p.IsActive == isActive.Value);
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .OrderByDescending(p => p.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
             return new PaginatedProductsDTO
             {
-                Items = paginated.Items.Select(ToDTO),
-                TotalCount = paginated.TotalCount,
-                PageNumber = paginated.PageNumber,
-                PageSize = paginated.PageSize,
-                TotalPages = paginated.TotalPages
+                Items = items.Select(ToDTO),
+                TotalCount = totalCount,
+                PageNumber = page,
+                PageSize = pageSize,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
             };
         }
 
-        public async Task<PaginatedProductsDTO> SearchAsync(string searchTerm, int pageNumber, int pageSize)
+        public async Task<PaginatedProductsDTO> SearchAsync(
+            string term,
+            bool? isActive,
+            int page,
+            int pageSize)
         {
-            var paginated = await _productRepository.SearchAsync(searchTerm, pageNumber, pageSize);
+            var query = _context.Products.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(term))
+            {
+                query = query.Where(p =>
+                    p.Name.Contains(term) ||
+                    (p.Description != null && p.Description.Contains(term)));
+            }
+
+            if (isActive.HasValue)
+            {
+                query = query.Where(p => p.IsActive == isActive.Value);
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .OrderByDescending(p => p.Id)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
             return new PaginatedProductsDTO
             {
-                Items = paginated.Items.Select(ToDTO),
-                TotalCount = paginated.TotalCount,
-                PageNumber = paginated.PageNumber,
-                PageSize = paginated.PageSize,
-                TotalPages = paginated.TotalPages
+                Items = items.Select(ToDTO),
+                TotalCount = totalCount,
+                PageNumber = page,
+                PageSize = pageSize,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
             };
         }
 

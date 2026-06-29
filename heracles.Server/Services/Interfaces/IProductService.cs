@@ -13,7 +13,17 @@ namespace heracles.Server.Services.Interfaces
         Task<bool> DeleteAsync(int id);
         Task<IEnumerable<ProductDTO>> GetByCategoryAsync(string category);
         Task<IEnumerable<ProductDTO>> GetActiveAsync();
-        Task<PaginatedProductsDTO> GetPaginatedAsync(int pageNumber, int pageSize);
-        Task<PaginatedProductsDTO> SearchAsync(string searchTerm, int pageNumber, int pageSize);
+        Task<PaginatedProductsDTO> GetPaginatedAsync(
+       string? search,
+       string? category,
+       bool? isActive,
+       int page,
+       int pageSize);
+
+        Task<PaginatedProductsDTO> SearchAsync(
+            string term,
+            bool? isActive,
+            int page,
+            int pageSize);
     }
 }

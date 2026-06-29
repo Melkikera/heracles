@@ -1,12 +1,16 @@
 // src/pages/Products/ProductsPage.tsx
-import { useMemo, useState } from 'react';
-import { useProducts, useCreateProduct, useUpdateProduct, useDeleteProduct } from '../../services/useProducts';
-import type { Product, ProductFilters } from '../../types/product';
-import { ProductFilters as Filters } from '../../components/products/ProductFilters';
+import { useState } from 'react';
+import {
+  useProducts,
+  useCreateProduct,
+  useUpdateProduct,
+  useDeleteProduct,
+} from '../../services/useProducts';
+import type { Product, ProductFilters, ProductFormValues } from '../../types/product';
+import { ProductToolbar } from '../../components/products/ProductToolbar';
 import { ProductList } from '../../components/products/ProductList';
 import { ProductPagination } from '../../components/products/ProductPagination';
 import { ProductForm } from '../../components/products/ProductForm';
-import { ProductToolbar } from '../../components/products/ProductToolbar';
 import { ProductEmptyState } from '../../components/products/ProductEmptyState';
 
 export default function ProductsPage() {
@@ -18,12 +22,25 @@ export default function ProductsPage() {
     pageSize: 10,
   });
 
+  
   const { data, isLoading, isError } = useProducts(filters);
   const createProduct = useCreateProduct();
   const updateProduct = useUpdateProduct();
   const deleteProduct = useDeleteProduct();
 
   const [editing, setEditing] = useState<Product | null>(null);
+  const editingInitialValue = editing
+  ? {
+      id: editing.id,
+      name: editing.name,
+      description: editing.description ?? '',
+      price: editing.price,
+      category: editing.category ?? '',
+      isActive: editing.isActive,
+      stockQuantity: editing.stockQuantity,
+    }
+  : undefined;
+
   const [formOpen, setFormOpen] = useState(false);
 
   const items = data?.items ?? [];
@@ -39,15 +56,15 @@ export default function ProductsPage() {
     setFormOpen(true);
   };
 
-  const submitForm = async (values: any) => {
-    if (editing) {
-      await updateProduct.mutateAsync({ id: editing.id, input: values });
-    } else {
-      await createProduct.mutateAsync(values);
-    }
-    setFormOpen(false);
-    setEditing(null);
-  };
+  const submitForm = async (values: ProductFormValues) => {
+  if (editing) {
+    await updateProduct.mutateAsync({ id: editing.id, input: values });
+  } else {
+    await createProduct.mutateAsync(values);
+  }
+  setFormOpen(false);
+  setEditing(null);
+};
 
   const onDelete = async (id: number) => {
     if (window.confirm('Supprimer ce produit ?')) {
@@ -55,27 +72,24 @@ export default function ProductsPage() {
     }
   };
 
-  const hasItems = useMemo(() => items.length > 0, [items]);
-
   return (
     <div className="products-page">
       <ProductToolbar
-  onCreate={openCreate}
-  search={filters.search}
-  onSearchChange={(value) => setFilters((f) => ({ ...f, search: value, page: 1 }))}
-  category={filters.category}
-  onCategoryChange={(value) => setFilters((f) => ({ ...f, category: value, page: 1 }))}
-  isActive={filters.isActive}
-  onIsActiveChange={(value) => setFilters((f) => ({ ...f, isActive: value, page: 1 }))}
-  totalCount={data?.totalCount}
-/>
-      <Filters filters={filters} onChange={setFilters} />
+        onCreate={openCreate}
+        search={filters.search}
+        onSearchChange={(value) => setFilters((f) => ({ ...f, search: value, page: 1 }))}
+        category={filters.category}
+        onCategoryChange={(value) => setFilters((f) => ({ ...f, category: value, page: 1 }))}
+        isActive={filters.isActive}
+        onIsActiveChange={(value) => setFilters((f) => ({ ...f, isActive: value, page: 1 }))}
+        totalCount={data?.totalCount}
+      />
 
       {isLoading ? (
         <div>Chargement...</div>
       ) : isError ? (
         <div>Erreur de chargement.</div>
-      ) : hasItems ? (
+      ) : items.length > 0 ? (
         <>
           <ProductList products={items} onEdit={openEdit} onDelete={onDelete} />
           <ProductPagination
@@ -90,7 +104,7 @@ export default function ProductsPage() {
 
       {formOpen && (
         <ProductForm
-          initialValue={editing ?? undefined}
+          initialValue={editingInitialValue ?? undefined}
           onSubmit={submitForm}
           onCancel={() => {
             setFormOpen(false);

@@ -51,7 +51,7 @@
             existing.Status = item.Status;
             existing.UpdatedAt = System.DateTime.UtcNow;
 
-            _unitOfWork.Feedbacks.UpdateAsync(existing);
+            await _unitOfWork.Feedbacks.UpdateAsync(existing);
             await _unitOfWork.CommitAsync();
 
             return existing;
@@ -67,7 +67,7 @@
             existing.DeletedAt = System.DateTime.UtcNow;
             existing.UpdatedAt = System.DateTime.UtcNow;
 
-            _unitOfWork.Feedbacks.UpdateAsync(existing);
+            await _unitOfWork.Feedbacks.UpdateAsync(existing);
             await _unitOfWork.CommitAsync();
 
             return true;

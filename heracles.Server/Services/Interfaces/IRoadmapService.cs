@@ -1,5 +1,6 @@
 ﻿namespace heracles.Server.Services.Interfaces
 {
+    using heracles.Server.DTOs;
     using heracles.Server.Entities;
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -16,5 +17,6 @@
         Task<IEnumerable<RoadmapItem>> GetByBacklogItemAsync(long backlogItemId);
         Task<IEnumerable<RoadmapItem>> GetByQuarterAsync(string quarter);
         Task<IEnumerable<RoadmapItem>> GetByDateRangeAsync(System.DateTime start, System.DateTime end);
+        Task<List<RoadmapTimelineDto>> GetTimelineAsync();
     }
 }

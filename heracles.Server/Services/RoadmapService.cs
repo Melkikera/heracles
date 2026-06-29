@@ -1,8 +1,10 @@
 ﻿namespace heracles.Server.Services
 {
+    using heracles.Server.DTOs;
     using heracles.Server.Entities;
     using heracles.Server.Repositories;
     using heracles.Server.Services.Interfaces;
+    using Microsoft.EntityFrameworkCore;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
@@ -91,6 +93,25 @@
         public async Task<IEnumerable<RoadmapItem>> GetByDateRangeAsync(System.DateTime start, System.DateTime end)
         {
             return await _unitOfWork.RoadmapItems.GetByDateRangeAsync(start, end);
+        }
+
+        public async Task<List<RoadmapTimelineDto>> GetTimelineAsync()
+        {
+            return await _unitOfWork.RoadmapItems
+                .Query()
+                .Include(r => r.BacklogItem)
+                .Select(r => new RoadmapTimelineDto
+                {
+                    Id = r.Id,
+                    Title = r.Title,
+                    Quarter = r.Quarter,
+                    StartDate = r.StartDate != null ? r.StartDate.ToString("yyyy-MM-dd") : null,
+                    EndDate = r.EndDate != null ? r.EndDate.ToString("yyyy-MM-dd") : null,
+                    BacklogItemId = r.BacklogItemId,
+                    BacklogItemTitle = r.BacklogItem != null ? r.BacklogItem.Title : null,
+                    BacklogItemType = r.BacklogItem != null ? r.BacklogItem.Type : null
+                })
+                .ToListAsync();
         }
     }
 }

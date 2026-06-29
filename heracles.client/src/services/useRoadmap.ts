@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { roadmapService } from './roadmapService';
-import type { RoadmapItem, RoadmapItemCreate } from '../types/roadmap';
+import type { RoadmapItemCreate } from '../types/roadmap';
 
 export function useRoadmap() {
   return useQuery({
@@ -61,5 +61,12 @@ export function useRoadmapByBacklogItem(backlogItemId: number) {
   return useQuery({
     queryKey: ['roadmap', 'backlog', backlogItemId],
     queryFn: () => roadmapService.getByBacklogItem(backlogItemId),
+  });
+}
+
+export function useRoadmapTimeline() {
+  return useQuery({
+    queryKey: ['roadmap', 'timeline'],
+    queryFn: roadmapService.getTimeline,
   });
 }

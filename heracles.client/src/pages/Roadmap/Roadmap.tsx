@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useRoadmap, useCreateRoadmap, useUpdateRoadmap, useDeleteRoadmap } from '../../services/useRoadmap';
+import { useRoadmap, useCreateRoadmap, useUpdateRoadmap, useDeleteRoadmap, useRoadmapTimeline } from '../../services/useRoadmap';
 import { useBacklog } from '../../services/useBacklog';
 import { RoadmapList } from '../../components/Roadmap/RoadmapList';
 import { RoadmapFilters } from '../../components/Roadmap/RoadmapFilters';
@@ -15,6 +15,7 @@ interface RoadmapFiltersState {
 function Roadmap() {
   const { data: roadmapItems = [], isLoading: isLoadingRoadmap } = useRoadmap();
   const { data: backlogItems = [], isLoading: isLoadingBacklog } = useBacklog();
+  const { data: timelineItems = [], isLoading: isLoadingTimeline, error: timelineError } = useRoadmapTimeline();
   const createRoadmap = useCreateRoadmap();
   const updateRoadmap = useUpdateRoadmap();
   const deleteRoadmap = useDeleteRoadmap();
@@ -82,7 +83,13 @@ function Roadmap() {
       {/* Vue Timeline */}
       <div className="roadmap-timeline-section">
         <h2>Timeline</h2>
-        <RoadmapTimeline items={filteredItems} />
+        {isLoadingTimeline ? (
+          <div className="loading">Loading...</div>
+        ) : timelineError ? (
+          <div className="error">Error loading timeline</div>
+        ) : (
+          <RoadmapTimeline items={timelineItems} />
+        )}
       </div>
 
       {/* Liste */}

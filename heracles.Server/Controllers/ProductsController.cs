@@ -36,20 +36,24 @@ namespace heracles.Server.Controllers
         // GET: api/products/paginated?page=1&pageSize=10
         [HttpGet("paginated")]
         public async Task<PaginatedProductsDTO> GetPaginated(
-            [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10)
+     [FromQuery] string? search,
+     [FromQuery] string? category,
+     [FromQuery] bool? isActive,
+     [FromQuery] int page = 1,
+     [FromQuery] int pageSize = 10)
         {
-            return await _productService.GetPaginatedAsync(page, pageSize);
+            return await _productService.GetPaginatedAsync(search, category, isActive, page, pageSize);
         }
 
         // GET: api/products/search?term=xxx&page=1&pageSize=10
         [HttpGet("search")]
         public async Task<PaginatedProductsDTO> Search(
-            [FromQuery] string term,
-            [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10)
+     [FromQuery] string term,
+     [FromQuery] bool? isActive,
+     [FromQuery] int page = 1,
+     [FromQuery] int pageSize = 10)
         {
-            return await _productService.SearchAsync(term, page, pageSize);
+            return await _productService.SearchAsync(term, isActive, page, pageSize);
         }
 
         // GET: api/products/category/{category}

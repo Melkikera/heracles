@@ -1,23 +1,37 @@
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+// src/components/backlog/BacklogStats.tsx
+import type { BacklogItem } from '../Backlog/BacklogCard';
+import { StatsGrid } from '../common/StatsGrid';
 
-export default function BacklogStats() {
-  const data = [
-    { type: 'Feature', count: 12 },
-    { type: 'Bug', count: 5 },
-    { type: 'Initiative', count: 3 },
-  ];
+export function BacklogStats({ items }: { items: BacklogItem[] }) {
+  const features = items.filter((i) => i.type === 'feature').length;
+  const bugs = items.filter((i) => i.type === 'bug').length;
+  const inProgress = items.filter((i) => i.status === 'in_progress').length;
 
   return (
-    <div className="stats-card">
-      <h3>Backlog par Type</h3>
-      <BarChart width={300} height={200} data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="type" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Bar dataKey="count" fill="#4f46e5" />
-      </BarChart>
-    </div>
+    <StatsGrid>
+      <article className="stat-card">
+        <span className="stat-card__label">Total backlog</span>
+        <strong className="stat-card__value">{items.length}</strong>
+        <span className="stat-card__hint">All backlog elements</span>
+      </article>
+
+      <article className="stat-card">
+        <span className="stat-card__label">Features</span>
+        <strong className="stat-card__value">{features}</strong>
+        <span className="stat-card__hint">Planned product features</span>
+      </article>
+
+      <article className="stat-card">
+        <span className="stat-card__label">Bugs</span>
+        <strong className="stat-card__value">{bugs}</strong>
+        <span className="stat-card__hint">Issues to fix</span>
+      </article>
+
+      <article className="stat-card">
+        <span className="stat-card__label">In progress</span>
+        <strong className="stat-card__value">{inProgress}</strong>
+        <span className="stat-card__hint">Currently being worked on</span>
+      </article>
+    </StatsGrid>
   );
 }

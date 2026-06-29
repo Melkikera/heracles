@@ -1,11 +1,14 @@
 import React from 'react';
 import './dashboard.css';
 import { ROUTES } from '../../constants';
-import ProductStats from '../../components/Stats/ProductStats';
-import BacklogStats from '../../components/Stats/BacklogStats';
+import {ProductStats} from '../../components/Stats/ProductStats';
+import {BacklogStats} from '../../components/Stats/BacklogStats';
 import { RoadmapStats } from '../../components/Stats/RoadmapStats';
 import { RecentFeedbacks } from '../../components/Feedback/RecentFeedbacks';
 import { RoadmapPreview } from '../../components/Roadmap/RoadmapPreview';
+import { useProducts } from '../../services/useProducts';
+import { useBacklog } from '../../services/useBacklog';
+import { useRoadmap } from '../../services/useRoadmap';
 
 const Dashboard: React.FC = () => {
     
@@ -16,14 +19,22 @@ const Dashboard: React.FC = () => {
             .catch(() => { });
     }, []);
 
+    const productsQuery = useProducts({ page: 1, pageSize: 100 });
+  const backlogQuery = useBacklog();
+  const roadmapQuery = useRoadmap();
+
+  const products = productsQuery.data?.items ?? [];
+  const backlogItems = backlogQuery.data ?? [];
+  const roadmapItems = roadmapQuery.data ?? [];
+
     return (
         <div className="admin-dashboard">
             <h1>Dashboard</h1>
             {/* KPI Cards */}
       <div className="stats-grid">
-        <ProductStats />
-        <BacklogStats />
-        <RoadmapStats /> 
+        <ProductStats products={products} totalCount={products.length} />
+        <BacklogStats items={backlogItems} />
+        <RoadmapStats items={roadmapItems} /> 
       </div>
 
       {/* Widgets */}

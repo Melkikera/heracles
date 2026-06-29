@@ -1,5 +1,6 @@
 ﻿namespace heracles.Server.Controllers
 {
+    using heracles.Server.DTOs;
     using heracles.Server.Entities;
     using heracles.Server.Services.Interfaces;
     using Microsoft.AspNetCore.Mvc;
@@ -94,6 +95,13 @@
             // return int.Parse(userIdClaim ?? "1");
 
             return 1; // valeur par exemple
+        }
+
+        [HttpGet("timeline")]
+        public async Task<ActionResult<List<RoadmapTimelineDto>>> GetTimeline()
+        {
+            var timeline = await _roadmapService.GetTimelineAsync();
+            return Ok(timeline);
         }
     }
 }

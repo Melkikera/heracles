@@ -1,83 +1,38 @@
-import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { useFeedback } from '../../services/useFeedback';
+// src/components/feedback/FeedbackStats.tsx
+import type { Feedback } from '../../types/feedback';
+import { StatsGrid } from '../common/StatsGrid';
 
-export function FeedbackStats() {
-  const { data: feedbacks = [], isLoading } = useFeedback();
-
-  if (isLoading) {
-    return <div className="stats-card">Loading stats...</div>;
-  }
-
-  // Stats par source
-  const bySource = feedbacks.reduce((acc, item) => {
-    acc[item.source] = (acc[item.source] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-
-  const sourceData = [
-    { name: 'Direct', count: bySource['direct'] || 0 },
-    { name: 'Support', count: bySource['support'] || 0 },
-    { name: 'Sale', count: bySource['sale'] || 0 },
-    { name: 'Other', count: bySource['other'] || 0 },
-  ];
-
-  // Stats par statut
-  const byStatus = feedbacks.reduce((acc, item) => {
-    acc[item.status] = (acc[item.status] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-
-  const totalFeedbacks = feedbacks.length;
-  const linkedCount = byStatus['linked'] || 0;
-  const newCount = byStatus['new'] || 0;
-  const ignoredCount = byStatus['ignored'] || 0;
-  const linkedPercentage = totalFeedbacks > 0 ? Math.round((linkedCount / totalFeedbacks) * 100) : 0;
+export function FeedbackStats({ items }: { items: Feedback[] }) {
+  const newCount = items.filter((i) => i.status === 'new').length;
+  const linkedCount = items.filter((i) => i.status === 'linked').length;
+  const ignoredCount = items.filter((i) => i.status === 'ignored').length;
+  const supportCount = items.filter((i) => i.source === 'support').length;
 
   return (
-    <div className="stats-card">
-      <h3>Feedback Stats</h3>
+    <StatsGrid>
+      <article className="stat-card">
+        <span className="stat-card__label">Total feedback</span>
+        <strong className="stat-card__value">{items.length}</strong>
+        <span className="stat-card__hint">All feedback items</span>
+      </article>
 
-      {/* KPI Cards */}
-      <div className="stats-kpi">
-        <div className="kpi-item">
-          <span className="kpi-value">{totalFeedbacks}</span>
-          <span className="kpi-label">Total</span>
-        </div>
-        <div className="kpi-item">
-          <span className="kpi-value linked">{linkedCount}</span>
-          <span className="kpi-label">Linked</span>
-        </div>
-        <div className="kpi-item">
-          <span className="kpi-value new">{newCount}</span>
-          <span className="kpi-label">New</span>
-        </div>
-        <div className="kpi-item">
-          <span className="kpi-value ignored">{ignoredCount}</span>
-          <span className="kpi-label">Ignored</span>
-        </div>
-      </div>
+      <article className="stat-card">
+        <span className="stat-card__label">New</span>
+        <strong className="stat-card__value">{newCount}</strong>
+        <span className="stat-card__hint">Not processed yet</span>
+      </article>
 
-      {/* Percentage Link */}
-      <div className="stats-link-percentage">
-        <span className="link-pct-value">{linkedPercentage}%</span>
-        <span className="link-pct-label">linked to backlog</span>
-      </div>
+      <article className="stat-card">
+        <span className="stat-card__label">Linked</span>
+        <strong className="stat-card__value">{linkedCount}</strong>
+        <span className="stat-card__hint">Attached to backlog</span>
+      </article>
 
-      {/* Graphique par source */}
-      <div className="stats-chart">
-        <h4>By Source</h4>
-        <ResponsiveContainer width="100%" height={200}>
-          <BarChart data={sourceData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="count" fill="#4f46e5" />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
+      <article className="stat-card">
+        <span className="stat-card__label">Ignored / Support</span>
+        <strong className="stat-card__value">{ignoredCount} / {supportCount}</strong>
+        <span className="stat-card__hint">Filtered and support sources</span>
+      </article>
+    </StatsGrid>
   );
 }

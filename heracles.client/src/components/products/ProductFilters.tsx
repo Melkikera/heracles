@@ -15,11 +15,13 @@ export function ProductFilters({
         onChange={(e) => onChange({ ...filters, search: e.target.value, page: 1 })}
         placeholder="Rechercher..."
       />
+
       <input
         value={filters.category}
         onChange={(e) => onChange({ ...filters, category: e.target.value, page: 1 })}
         placeholder="Catégorie"
       />
+
       <select
         value={filters.isActive}
         onChange={(e) => onChange({ ...filters, isActive: e.target.value, page: 1 })}

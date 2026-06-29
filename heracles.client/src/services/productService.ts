@@ -3,9 +3,28 @@ import apiClient from '../api/apiClient';
 import type { PaginatedProducts, Product, ProductCreateInput, ProductUpdateInput } from '../types/product';
 
 export const productService = {
-  getPaginated: async (params: { page: number; pageSize: number; search?: string; category?: string; isActive?: string }) => {
-    console.log('Fetching paginated products with params:', params);
-    const response = await apiClient.get<PaginatedProducts>('/products/paginated', { params });
+  getPaginated: async (params: {
+    page: number;
+    pageSize: number;
+    search?: string;
+    category?: string;
+    isActive?: boolean;
+  }) => {
+    const response = await apiClient.get<PaginatedProducts>('/products/paginated', {
+      params,
+    });
+    return response.data;
+  },
+
+  search: async (params: {
+    term: string;
+    page: number;
+    pageSize: number;
+    isActive?: boolean;
+  }) => {
+    const response = await apiClient.get<PaginatedProducts>('/products/search', {
+      params,
+    });
     return response.data;
   },
 
