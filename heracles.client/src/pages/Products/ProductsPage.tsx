@@ -1,5 +1,6 @@
 // src/pages/Products/ProductsPage.tsx
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   useProducts,
   useCreateProduct,
@@ -10,10 +11,11 @@ import type { Product, ProductFilters, ProductFormValues } from '../../types/pro
 import { ProductToolbar } from '../../components/products/ProductToolbar';
 import { ProductList } from '../../components/products/ProductList';
 import { ProductPagination } from '../../components/products/ProductPagination';
-import { ProductForm } from '../../components/products/ProductForm';
 import { ProductEmptyState } from '../../components/products/ProductEmptyState';
+import ProductModal from './ProductModal';
 
 export default function ProductsPage() {
+  const navigate = useNavigate();
   const [filters, setFilters] = useState<ProductFilters>({
     search: '',
     category: '',
@@ -29,31 +31,20 @@ export default function ProductsPage() {
   const deleteProduct = useDeleteProduct();
 
   const [editing, setEditing] = useState<Product | null>(null);
-  const editingInitialValue = editing
-  ? {
-      id: editing.id,
-      name: editing.name,
-      description: editing.description ?? '',
-      price: editing.price,
-      category: editing.category ?? '',
-      isActive: editing.isActive,
-      stockQuantity: editing.stockQuantity,
-    }
-  : undefined;
 
-  const [formOpen, setFormOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const items = data?.items ?? [];
   const totalPages = data?.totalPages ?? 1;
 
   const openCreate = () => {
     setEditing(null);
-    setFormOpen(true);
+    setModalOpen(true);
   };
 
   const openEdit = (product: Product) => {
     setEditing(product);
-    setFormOpen(true);
+    setModalOpen(true);
   };
 
   const submitForm = async (values: ProductFormValues) => {
@@ -62,7 +53,7 @@ export default function ProductsPage() {
   } else {
     await createProduct.mutateAsync(values);
   }
-  setFormOpen(false);
+  setModalOpen(false);
   setEditing(null);
 };
 
@@ -91,7 +82,12 @@ export default function ProductsPage() {
         <div>Erreur de chargement.</div>
       ) : items.length > 0 ? (
         <>
-          <ProductList products={items} onEdit={openEdit} onDelete={onDelete} />
+          <ProductList
+            products={items}
+            onEdit={openEdit}
+            onDelete={onDelete}
+            onOpen={(id) => navigate(`/products/${id}`)}
+          />
           <ProductPagination
             page={filters.page}
             totalPages={totalPages}
@@ -102,16 +98,15 @@ export default function ProductsPage() {
         <ProductEmptyState onCreate={openCreate} />
       )}
 
-      {formOpen && (
-        <ProductForm
-          initialValue={editingInitialValue ?? undefined}
-          onSubmit={submitForm}
-          onCancel={() => {
-            setFormOpen(false);
-            setEditing(null);
-          }}
-        />
-      )}
+      <ProductModal
+        isOpen={modalOpen}
+        product={editing ?? undefined}
+        onSubmit={submitForm}
+        onClose={() => {
+          setModalOpen(false);
+          setEditing(null);
+        }}
+      />
     </div>
   );
 }

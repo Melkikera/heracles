@@ -33,23 +33,6 @@ export function useProducts(filters: ProductFilters) {
   });
 }
 
-export function useProductSearch(term: string, page: number, pageSize: number, isActive?: boolean) {
-  const enabled = term.trim().length > 0;
-
-  return useQuery<PaginatedProducts>({
-    queryKey: ['products', 'search', term, page, pageSize, isActive],
-    queryFn: () =>
-      productService.search({
-        term: term.trim(),
-        page,
-        pageSize,
-        isActive,
-      }),
-    enabled,
-    placeholderData: (previous) => previous,
-  });
-}
-
 export function useProduct(id?: number) {
   return useQuery<Product>({
     queryKey: ['product', id],

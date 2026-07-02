@@ -1,35 +1,53 @@
 import React from 'react';
-
-import ProductModalForm from './ProductModalForm';
+import type { Product } from '../../types/product';
+import type { ProductFormValues } from '../../types/product';
+import { ProductForm } from '../../components/products/ProductForm';
 
 interface Props {
-  product?: any;
-  onClose?: () => void;
-  onSaved?: (c: any) => void | Promise<void>;
+  isOpen: boolean;
+  product?: Product;
+  onClose: () => void;
+  onSubmit: (values: ProductFormValues) => void | Promise<void>;
 }
 
-const ProductModal: React.FC<Props> = ({ product, onClose, onSaved }) => {
-  // Ne pas appeler onClose automatiquement — laisser le parent décider de fermer (après réussite)
-  const handleSaved = (saved: any) => {
-    if (onSaved) onSaved(saved);
-  };
-    console.log(product);
-  const modalId = product ? `contact-modal-${product.id}` : 'productContact';
+const ProductModal: React.FC<Props> = ({ isOpen, product, onClose, onSubmit }) => {
+  if (!isOpen) return null;
+
+  const initialValue = product
+    ? {
+        id: product.id,
+        name: product.name,
+        description: product.description ?? '',
+        price: product.price,
+        category: product.category ?? '',
+        isActive: product.isActive,
+        stockQuantity: product.stockQuantity,
+        sku: product.sku ?? '',
+        discountPercentage: product.discountPercentage ?? undefined,
+      }
+    : undefined;
 
   return (
-    <div className="modal show" id={modalId} tabIndex={-1} role="dialog" style={{ display: 'block' }}>
-      <div className="modal-dialog" role="document">
-        <div className="modal-content">
+    <>
+      <div className="modal-overlay">
+        <div className="modal-content" role="dialog" aria-modal="true" aria-label={product ? 'Edit Product' : 'Create a new Product'}>
           <div className="modal-header">
-            <h5 className="modal-title">{product ? 'Edit Product' : 'Add Product'}</h5>
-            <button type="button" className="btn-close" aria-label="Close" onClick={onClose}></button>
+            <h2>{product ? 'Edit Product' : 'Create a new Product'}</h2>
+            <button type="button" className="modal-close" onClick={onClose} aria-label="Close">
+              âœ•
+            </button>
           </div>
-                  <div className="modal-body">
-                      <ProductModalForm product={product} onSaved={handleSaved} />
+
+          <div className="modal-body">
+            <ProductForm
+              initialValue={initialValue}
+              onSubmit={onSubmit}
+              onCancel={onClose}
+            />
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

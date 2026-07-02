@@ -1,6 +1,14 @@
-// src/components/roadmap/RoadmapStats.tsx
-import { StatsGrid } from '../common/StatsGrid';
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts';
 import type { RoadmapItem } from '../Roadmap/RoadmapCard';
+
+const COLORS = ['#4f46e5', '#ef4444', '#10b981', '#f59e0b'];
 
 export function RoadmapStats({ items }: { items: RoadmapItem[] }) {
   const q1 = items.filter((i) => i.quarter?.includes('Q1')).length;
@@ -8,31 +16,38 @@ export function RoadmapStats({ items }: { items: RoadmapItem[] }) {
   const q3 = items.filter((i) => i.quarter?.includes('Q3')).length;
   const q4 = items.filter((i) => i.quarter?.includes('Q4')).length;
 
+  const data = [
+    { name: 'Q1', value: q1 },
+    { name: 'Q2', value: q2 },
+    { name: 'Q3', value: q3 },
+    { name: 'Q4', value: q4 },
+  ].filter((item) => item.value > 0);
+
   return (
-    <StatsGrid>
-      <article className="stat-card">
-        <span className="stat-card__label">Total roadmap</span>
-        <strong className="stat-card__value">{items.length}</strong>
-        <span className="stat-card__hint">All roadmap items</span>
-      </article>
+    <article className="chart-card">
+      <span className="chart-card__label">Total roadmap</span>
+      <strong className="chart-card__value">{items.length}</strong>
+      <span className="chart-card__hint">All roadmap items</span>
 
-      <article className="stat-card">
-        <span className="stat-card__label">Q1</span>
-        <strong className="stat-card__value">{q1}</strong>
-        <span className="stat-card__hint">First quarter items</span>
-      </article>
-
-      <article className="stat-card">
-        <span className="stat-card__label">Q2 / Q3 / Q4</span>
-        <strong className="stat-card__value">{q2} / {q3} / {q4}</strong>
-        <span className="stat-card__hint">Distribution over the year</span>
-      </article>
-
-      <article className="stat-card">
-        <span className="stat-card__label">Planned</span>
-        <strong className="stat-card__value">{items.filter((i) => i.status === 'idea').length}</strong>
-        <span className="stat-card__hint">Not started yet</span>
-      </article>
-    </StatsGrid>
+      <div className="chart-container">
+        <ResponsiveContainer>
+          <PieChart>
+            <Pie
+              data={data}
+              dataKey="value"
+              nameKey="name"
+              outerRadius={90}
+              label
+            >
+              {data.map((_, index) => (
+                <Cell key={index} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip />
+            <Legend />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+    </article>
   );
 }

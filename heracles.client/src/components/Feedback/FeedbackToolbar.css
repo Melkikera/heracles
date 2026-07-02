@@ -2,6 +2,8 @@
 .feedback-toolbar {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  flex: 1 1 auto;
   gap: 1rem;
   margin-bottom: 1.5rem;
 }

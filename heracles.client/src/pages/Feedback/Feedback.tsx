@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useFeedback, useCreateFeedback, useUpdateFeedback, useDeleteFeedback } from '../../services/useFeedback';
 import { useBacklog } from '../../services/useBacklog';
 import { FeedbackList } from '../../components/Feedback/FeedbackList';
-import { FeedbackFilters } from '../../components/Feedback/FeedbackFilters';
 import { FeedbackModal } from './FeedbackModal';
 import type { Feedback, FeedbackCreate } from '../../types/feedback';
+import { FeedbackToolbar } from '../../components/Feedback/FeedbackToolbar';
+import type { FeedbackItem } from '../../components/Feedback/FeedbackCard';
 
 interface FeedbackFiltersState {
   source: string;
@@ -54,8 +55,8 @@ function Feedback() {
     setEditingItem(undefined);
   };
 
-  const handleEdit = (item: Feedback) => {
-    setEditingItem(item);
+  const handleEdit = (item: FeedbackItem) => {
+    setEditingItem(item as Feedback);
     setModalOpen(true);
   };
 
@@ -72,13 +73,17 @@ function Feedback() {
 
   return (
     <div className="feedback-page">
-      <h1>Feedback</h1>
 
       <div className="feedback-header">
-        <FeedbackFilters filters={filters} setFilters={setFilters} />
-        <button onClick={handleOpenCreate} className="btn-create">
-          + Create Feedback
-        </button>
+        <FeedbackToolbar onCreate={handleOpenCreate}
+        search={filters.search}
+        onSearchChange={(value) => setFilters((f) => ({ ...f, search: value, page: 1 }))}
+        source={filters.source}
+        onSourceChange={(value) => setFilters((f) => ({ ...f, source: value, page: 1 }))}
+        status={filters.status}
+        onStatusChange={(value) => setFilters((f) => ({ ...f, status: value, page: 1 }))}
+        totalCount={filteredItems?.length}
+        />        
       </div>
 
       {isLoadingFeedback || isLoadingBacklog ? (

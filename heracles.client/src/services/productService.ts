@@ -16,18 +16,6 @@ export const productService = {
     return response.data;
   },
 
-  search: async (params: {
-    term: string;
-    page: number;
-    pageSize: number;
-    isActive?: boolean;
-  }) => {
-    const response = await apiClient.get<PaginatedProducts>('/products/search', {
-      params,
-    });
-    return response.data;
-  },
-
   getById: async (id: number) => {
     const response = await apiClient.get<Product>(`/products/${id}`);
     return response.data;

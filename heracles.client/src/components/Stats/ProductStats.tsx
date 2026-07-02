@@ -1,6 +1,14 @@
-// src/components/products/ProductStats.tsx
 import type { Product } from '../../types/product';
-import { StatsGrid } from '../common/StatsGrid';
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts';
+
+const COLORS = ['#4f46e5', '#ef4444', '#10b981', '#f59e0b'];
 
 export function ProductStats({ products, totalCount }: { products: Product[]; totalCount: number }) {
   const activeCount = products.filter((p) => p.isActive).length;
@@ -8,31 +16,38 @@ export function ProductStats({ products, totalCount }: { products: Product[]; to
   const totalImages = products.reduce((acc, p) => acc + (p.images?.length ?? 0), 0);
   const totalTags = products.reduce((acc, p) => acc + (p.tags?.length ?? 0), 0);
 
+  const data = [
+    { name: 'Active', value: activeCount },
+    { name: 'Inactive', value: inactiveCount },
+    { name: 'Images', value: totalImages },
+    { name: 'Tags', value: totalTags },
+  ].filter((item) => item.value > 0);
+
   return (
-    <StatsGrid>
-      <article className="stat-card">
-        <span className="stat-card__label">Total products</span>
-        <strong className="stat-card__value">{totalCount}</strong>
-        <span className="stat-card__hint">All items in database</span>
-      </article>
+    <article className="chart-card">
+      <span className="chart-card__label">Product statistics</span>
+      <strong className="chart-card__value">{totalCount}</strong>
+      <span className="chart-card__hint">All items in database</span>
 
-      <article className="stat-card">
-        <span className="stat-card__label">Active</span>
-        <strong className="stat-card__value">{activeCount}</strong>
-        <span className="stat-card__hint">Visible and usable products</span>
-      </article>
-
-      <article className="stat-card">
-        <span className="stat-card__label">Inactive</span>
-        <strong className="stat-card__value">{inactiveCount}</strong>
-        <span className="stat-card__hint">Hidden or disabled products</span>
-      </article>
-
-      <article className="stat-card">
-        <span className="stat-card__label">Images / Tags</span>
-        <strong className="stat-card__value">{totalImages} / {totalTags}</strong>
-        <span className="stat-card__hint">Linked media and labels</span>
-      </article>
-    </StatsGrid>
+      <div className="chart-container">
+        <ResponsiveContainer>
+          <PieChart>
+            <Pie
+              data={data}
+              dataKey="value"
+              nameKey="name"
+              outerRadius={90}
+              label
+            >
+              {data.map((_, index) => (
+                <Cell key={index} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip />
+            <Legend />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+    </article>
   );
 }

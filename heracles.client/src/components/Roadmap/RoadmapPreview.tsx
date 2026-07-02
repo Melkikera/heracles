@@ -1,7 +1,6 @@
-import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
-import { useRoadmap } from '../../services/useRoadmap';
-import type { RoadmapItem } from '../../types/roadmap';
+import { useRoadmapTimeline } from '../../services/useRoadmap';
+import { RoadmapTimeline } from '../../pages/Roadmap/RoadmapTimeline';
+import './RoadmapPreview.css';
 
 interface RoadmapPreviewProps {
   quarters?: string[]; // Ex: ['Q2 2026', 'Q3 2026']
@@ -11,35 +10,18 @@ interface RoadmapPreviewProps {
 
 export function RoadmapPreview({ 
   quarters = ['Q2 2026', 'Q3 2026'], 
-  limit = 5,
-  height = 250 
-}: RoadmapPreviewProps) {
-  const { data: roadmapItems = [], isLoading } = useRoadmap();
+  limit = 5}: RoadmapPreviewProps) {
+  const { data: timelineItems = [], isLoading: isLoadingTimeline, error: timelineError } = useRoadmapTimeline();
 
-  if (isLoading) {
-    return <div className="roadmap-preview-loading">Loading roadmap...</div>;
-  }
 
   // Filtrer par quarters
-  const filteredItems = roadmapItems.filter((item) =>
+  const filteredItems = timelineItems.filter((item) =>
     quarters.includes(item.quarter || '')
   );
 
   if (filteredItems.length === 0) {
     return <div className="roadmap-preview-empty">No roadmap items for selected quarters</div>;
-  }
-
-  // Préparer les données pour le graphique
-  const chartData = quarters.map((quarter) => {
-    const quarterItems = filteredItems.filter((item) => item.quarter === quarter);
-    return {
-      quarter,
-      count: quarterItems.length,
-      features: quarterItems.filter((i) => i.backlogItem?.type === 'feature').length,
-      bugs: quarterItems.filter((i) => i.backlogItem?.type === 'bug').length,
-      initiatives: quarterItems.filter((i) => i.backlogItem?.type === 'initiative').length,
-    };
-  });
+  } 
 
   // Préparer les items à afficher (limités)
   const displayedItems = filteredItems.slice(0, limit);
@@ -66,27 +48,17 @@ export function RoadmapPreview({
     <div className="roadmap-preview-card">
       <h4>Roadmap Preview</h4>
 
-      {/* Graphique par quarter */}
-      <div className="roadmap-preview-chart">
-        <ResponsiveContainer width="100%" height={height}>
-          <BarChart data={chartData} stacked>
-            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-            <XAxis dataKey="quarter" stroke="#6b7280" />
-            <YAxis stroke="#6b7280" />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: '#fff',
-                border: '1px solid #e5e7eb',
-                borderRadius: '0.25rem',
-              }}
-            />
-            <Legend />
-            <Bar dataKey="features" name="Features" fill="#4f46e5" />
-            <Bar dataKey="bugs" name="Bugs" fill="#ef4444" />
-            <Bar dataKey="initiatives" name="Initiatives" fill="#10b981" />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+      {/* Vue Timeline */}
+            <div className="roadmap-timeline-section">
+              <h2>Timeline</h2>
+              {isLoadingTimeline ? (
+                <div className="loading">Loading...</div>
+              ) : timelineError ? (
+                <div className="error">Error loading timeline</div>
+              ) : (
+                <RoadmapTimeline items={displayedItems} />
+              )}
+            </div>
 
       {/* Liste des items */}
       <div className="roadmap-preview-items">
@@ -96,9 +68,9 @@ export function RoadmapPreview({
             <div className="roadmap-item-preview" key={item.id}>
               <div className="item-type-badge">
                 <span
-                  style={{ backgroundColor: getTypeColor(item.backlogItem?.type || 'unknown') }}
+                  style={{ backgroundColor: getTypeColor(item.backlogItemType || 'unknown') }}
                 >
-                  {item.backlogItem?.type || 'Unknown'}
+                  {item.backlogItemType || 'Unknown'}
                 </span>
               </div>
               <div className="item-info">
@@ -108,10 +80,10 @@ export function RoadmapPreview({
                   <span
                     className="item-status"
                     style={{
-                      backgroundColor: getStatusColor(item.backlogItem?.status || 'idea'),
+                      backgroundColor: getStatusColor(item.status || 'idea'),
                     }}
                   >
-                    {item.backlogItem?.status || 'idea'}
+                    {item.status || 'idea'}
                   </span>
                 </div>
               </div>
@@ -128,13 +100,13 @@ export function RoadmapPreview({
         </div>
         <div className="kpi-item">
           <span className="kpi-value features">
-            {filteredItems.filter((i) => i.backlogItem?.type === 'feature').length}
+            {filteredItems.filter((i) => i.backlogItemType === 'feature').length}
           </span>
           <span className="kpi-label">Features</span>
         </div>
         <div className="kpi-item">
           <span className="kpi-value bugs">
-            {filteredItems.filter((i) => i.backlogItem?.type === 'bug').length}
+            {filteredItems.filter((i) => i.backlogItemType === 'bug').length}
           </span>
           <span className="kpi-label">Bugs</span>
         </div>

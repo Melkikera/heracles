@@ -1,37 +1,53 @@
-// src/components/backlog/BacklogStats.tsx
 import type { BacklogItem } from '../Backlog/BacklogCard';
-import { StatsGrid } from '../common/StatsGrid';
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts';
+
+const COLORS = ['#4f46e5', '#ef4444', '#10b981', '#f59e0b'];
 
 export function BacklogStats({ items }: { items: BacklogItem[] }) {
   const features = items.filter((i) => i.type === 'feature').length;
   const bugs = items.filter((i) => i.type === 'bug').length;
   const inProgress = items.filter((i) => i.status === 'in_progress').length;
+  const other = Math.max(items.length - features - bugs - inProgress, 0);
+
+  const data = [
+    { name: 'Features', value: features },
+    { name: 'Bugs', value: bugs },
+    { name: 'In progress', value: inProgress },
+    { name: 'Other', value: other },
+  ].filter((item) => item.value > 0);
 
   return (
-    <StatsGrid>
-      <article className="stat-card">
-        <span className="stat-card__label">Total backlog</span>
-        <strong className="stat-card__value">{items.length}</strong>
-        <span className="stat-card__hint">All backlog elements</span>
-      </article>
+    <article className="chart-card">
+      <span className="chart-card__label">Total backlog</span>
+      <strong className="chart-card__value">{items.length}</strong>
+      <span className="chart-card__hint">All backlog elements</span>
 
-      <article className="stat-card">
-        <span className="stat-card__label">Features</span>
-        <strong className="stat-card__value">{features}</strong>
-        <span className="stat-card__hint">Planned product features</span>
-      </article>
-
-      <article className="stat-card">
-        <span className="stat-card__label">Bugs</span>
-        <strong className="stat-card__value">{bugs}</strong>
-        <span className="stat-card__hint">Issues to fix</span>
-      </article>
-
-      <article className="stat-card">
-        <span className="stat-card__label">In progress</span>
-        <strong className="stat-card__value">{inProgress}</strong>
-        <span className="stat-card__hint">Currently being worked on</span>
-      </article>
-    </StatsGrid>
+      <div className="chart-container">
+        <ResponsiveContainer>
+          <PieChart>
+            <Pie
+              data={data}
+              dataKey="value"
+              nameKey="name"
+              outerRadius={90}
+              label
+            >
+              {data.map((_, index) => (
+                <Cell key={index} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip />
+            <Legend />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+    </article>
   );
 }

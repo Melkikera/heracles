@@ -4,6 +4,7 @@ import { BacklogList } from './BacklogList';
 import { BacklogFilters } from '../../components/Backlog/BacklogFilters';
 import { BacklogModal } from './BacklogModal';
 import type { BacklogItem, BacklogItemCreate } from '../../types/backlog';
+import { BacklogToolbar } from '../../components/Backlog/BacklogToolbar';
 
 interface BacklogFiltersState {
   type: '' | 'feature' | 'bug' | 'initiative';
@@ -64,13 +65,16 @@ function Backlog() {
 
   return (
     <div className="backlog-page">
-      <h1>Backlog</h1>
-
       <div className="backlog-header">
-        <BacklogFilters filters={filters} setFilters={setFilters} />
-        <button onClick={handleOpenCreate} className="btn-create">
-          + Create Item
-        </button>
+        <BacklogToolbar
+        onCreate={handleOpenCreate}
+        search={filters.search}
+        onSearchChange={(value) => setFilters((f) => ({ ...f, search: value, page: 1 }))}
+        type={filters.type}
+        onTypeChange={(value) => setFilters((f) => ({ ...f, type: value, page: 1 }))}
+        status={filters.status}
+        onStatusChange={(value) => setFilters((f) => ({ ...f, status: value, page: 1 }))}
+        totalCount={items?.length} />
       </div>
 
       {isLoading ? (

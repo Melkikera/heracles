@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { useRoadmap, useCreateRoadmap, useUpdateRoadmap, useDeleteRoadmap, useRoadmapTimeline } from '../../services/useRoadmap';
 import { useBacklog } from '../../services/useBacklog';
 import { RoadmapList } from '../../components/Roadmap/RoadmapList';
-import { RoadmapFilters } from '../../components/Roadmap/RoadmapFilters';
 import { RoadmapModal } from './RoadmapModal';
 import { RoadmapTimeline } from './RoadmapTimeline';
 import type { RoadmapItem, RoadmapItemCreate } from '../../types/roadmap';
+import { RoadmapToolbar } from '../../components/Roadmap/RoadmapToolbar';
 
 interface RoadmapFiltersState {
   quarter: string;
@@ -71,13 +71,14 @@ function Roadmap() {
 
   return (
     <div className="roadmap-page">
-      <h1>Roadmap</h1>
-
       <div className="roadmap-header">
-        <RoadmapFilters filters={filters} setFilters={setFilters} />
-        <button onClick={handleOpenCreate} className="btn-create">
-          + Create Item
-        </button>
+        <RoadmapToolbar onCreate={handleOpenCreate}
+        search={filters.search}
+        onSearchChange={(value) => setFilters((f) => ({ ...f, search: value, page: 1 }))}
+        quarter={filters.quarter}
+        onQuarterChange={(value) => setFilters((f) => ({ ...f, quarter: value, page: 1 }))}
+        totalCount={filteredItems?.length}
+        />
       </div>
 
       {/* Vue Timeline */}
